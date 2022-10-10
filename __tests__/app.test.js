@@ -85,3 +85,26 @@ describe("Review endpoints", () => {
     });
   });
 });
+
+describe("GET /api/users", () => {
+  describe("Happy path", () => {
+    it("status: 200, responds wuth array of users", () => {
+      return request(app)
+        .get("/api/users")
+        .expect(200)
+        .then(({ body }) => {
+          expect(Array.isArray(body)).toBe(true);
+          expect(body.length).toBe(4);
+          body.forEach((user) => {
+            expect(user).toEqual(
+              expect.objectContaining({
+                username: expect.any(String),
+                name: expect.any(String),
+                avatar_url: expect.any(String),
+              })
+            );
+          });
+        });
+    });
+  });
+});
