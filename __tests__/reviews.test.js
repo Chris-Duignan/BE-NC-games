@@ -32,4 +32,22 @@ describe("GET /api/reviews/:review_id", () => {
         });
     });
   });
+  describe("Error Handling", () => {
+    it("error 404, responds with error when id does not exist", () => {
+        return request(app)
+            .get("/api/reviews/9999")
+            .expect(404)
+            .then(({body}) => {
+                expect(body.msg).toBe("Id 9999 not Found");
+            })
+    })
+    it("error 400, responds with error when incorrect id datatype entered", () => {
+        return request(app)
+            .get("/api/reviews/notAnId")
+            .expect(400)
+            .then(({body}) => {
+                expect(body.msg).toBe("Unexpected field type")
+            })
+    })
+  })
 });
