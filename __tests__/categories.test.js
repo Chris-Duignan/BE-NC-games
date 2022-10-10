@@ -33,6 +33,9 @@ describe("GET /api/categories", () => {
         return request(app)
             .get("/api/notAPath")
             .expect(404)
+            .then(({body}) => {
+                expect(body.msg).toBe("Route not Found");
+            })
     });
   });
 });
