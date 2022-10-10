@@ -12,3 +12,7 @@ In .env.development, add the following line: PGDATABASE=nc_games
 
 Your environment variables should now be created.
 
+## GET /api/categories 
+
+This endpoint will return an array of categories from the categories database.
+
