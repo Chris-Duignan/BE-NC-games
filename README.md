@@ -19,3 +19,7 @@ This endpoint will return an array of categories from the categories database.
 ## GET /api/reviews/:review_id
 
 This endpoint will return a single review by specified id e.g. /api/reviews/1 will return the review with review_id 1. Review Id must be entered as a number.
+
+## GET /api/users
+
+This endpoint will return an array of users from the users table.
