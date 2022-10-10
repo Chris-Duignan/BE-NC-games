@@ -107,4 +107,14 @@ describe("GET /api/users", () => {
         });
     });
   });
+  describe("Error handling", () => {
+    it("status 404: responds with error when incorrect path entered", () => {
+      return request(app)
+        .get("/api/notAPath")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Route not Found");
+        });
+    });
+  })
 });
