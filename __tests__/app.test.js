@@ -87,10 +87,46 @@ describe("Review endpoints", () => {
 
   describe("PATCH /api/reviews/:review_id", () => {
     describe("Happy path", () => {
-      it("status: 201, responds with the added review", () => {
+      it("status: 200, responds with the added review", () => {
         return request(app)
-          .patch("/api/reviews")
+          .patch("/api/reviews/1")
+          .send({ inc_votes: 1 })
+          .expect(200)
+          .then(({ body }) => {
+            expect(body).toEqual(
+              expect.objectContaining({
+                review_id: 1,
+                title: "Agricola",
+                review_body: "Farmyard fun!",
+                designer: "Uwe Rosenberg",
+                review_img_url:
+                  "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
+                votes: 2,
+                category: "euro game",
+                owner: "mallionaire",
+                created_at: expect.any(String),
+              })
+            );
+          });
       });
+      it("status: 200, update reviews can increment votes by a value greater than 1", () => {
+        return request(app)
+          .patch("/api/reviews/1")
+          .send({inc_votes: 10})
+          .expect(200)
+          .then(({body}) => {
+            expect(body.votes).toBe(11);
+          })
+      })
+      it("status: 200, can decrement votes when given a negative number", () => {
+        return request(app)
+          .patch("/api/reviews/1")
+          .send({inc_votes: -1})
+          .expect(200)
+          .then(({body}) => {
+            expect(body.votes).toBe(0);
+          })
+      })
     });
   });
 });
