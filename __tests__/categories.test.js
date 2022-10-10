@@ -28,4 +28,11 @@ describe("GET /api/categories", () => {
         });
     });
   });
+  describe("Error handling", () => {
+    it("status 404: responds with error when incorrect path entered", () => {
+        return request(app)
+            .get("/api/notAPath")
+            .expect(404)
+    });
+  });
 });
