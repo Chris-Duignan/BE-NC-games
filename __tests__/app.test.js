@@ -89,7 +89,7 @@ describe("Review endpoints", () => {
     describe("Happy path", () => {
       it("status: 201, responds with the added review", () => {
         return request(app)
-          .get("/api/reviews")
+          .patch("/api/reviews")
       });
     });
   });
