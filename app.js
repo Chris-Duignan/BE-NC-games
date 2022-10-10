@@ -1,12 +1,15 @@
 const express = require("express");
 const { getCategories } = require("./controllers/categoryControllers");
 const { getReviewById } = require("./controllers/reviewControllers");
+const { getUsers } = require("./controllers/usersControllers");
 
 const app = express();
 
 app.get("/api/categories", getCategories);
 
 app.get("/api/reviews/:review_id", getReviewById);
+
+app.get("/api/users", getUsers);
 
 app.use((req, res, next) => {
   res.status(404).send({
@@ -15,7 +18,6 @@ app.use((req, res, next) => {
 });
 
 app.use((err, req, res, next) => {
-    console.log(err)
   if (err.status && err.msg) {
     res.status(err.status).send({msg: err.msg});
   } else {
