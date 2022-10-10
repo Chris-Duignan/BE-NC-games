@@ -84,4 +84,13 @@ describe("Review endpoints", () => {
       });
     });
   });
+
+  describe("PATCH /api/reviews/:review_id", () => {
+    describe("Happy path", () => {
+      it("status: 201, responds with the added review", () => {
+        return request(app)
+          .get("/api/reviews")
+      });
+    });
+  });
 });
