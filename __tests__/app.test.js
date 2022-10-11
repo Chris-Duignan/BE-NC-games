@@ -101,6 +101,93 @@ describe("Review endpoints", () => {
     });
   });
 
+  describe("GET /api/reviews", () => {
+    describe("Happy Path", () => {
+      it("status: 200, respond with array of all reviews", () => {
+        return request(app)
+          .get("/api/reviews")
+          .expect(200)
+          .then(({body}) => {
+            const {reviews} = body;
+            expect(Array.isArray(reviews)).toBe(true);
+            expect(reviews.length).toBe(13);
+            reviews.forEach(review => {
+              expect(review).toEqual(
+                expect.objectContaining({
+                  owner: expect.any(String),
+                  title: expect.any(String),
+                  review_id: expect.any(Number),
+                  category: expect.any(String),
+                  review_img_url: expect.any(String),
+                  created_at: expect.any(String),
+                  votes: expect.any(Number),
+                  designer: expect.any(String)
+                })
+              )
+            })
+          })
+      })
+      it("should contain a comment count field in each review object", () => {
+        return request(app)
+          .get("/api/reviews")
+          .expect(200)
+          .then(({body}) => {
+            body.reviews.forEach(review => {
+              expect(typeof review.comment_count).toBe("number");
+            })
+          })
+      })
+      it("should be sorted by date descending", () => {
+        return request(app)
+          .get("/api/reviews")
+          .expect(200)
+          .then(({body}) => {
+            expect(body.reviews).toBeSortedBy("created_at", {descending: true})
+          })
+      })
+      describe("Queries", () => {
+        it("should accept a category query which filters the reviews by the selected category", () => {
+          return request(app)
+            .get("/api/reviews?category=social_deduction")
+            .expect(200)
+            .then(({body}) => {
+              expect(body.reviews.length).toBe(11)
+              body.reviews.forEach(review => {
+                expect(review.category).toBe("social deduction")
+              })
+            })
+        })
+      })
+    })
+    describe("Error Handling", () => {
+      it("status 404: responds with error when incorrect path entered", () => {
+        return request(app)
+          .get("/api/notAPath")
+          .expect(404)
+          .then(({ body }) => {
+            expect(body.msg).toBe("Route not Found");
+          });
+      });
+      it("status 400, responds with error when category doesn't exist", () => {
+        return request(app)
+          .get("/api/reviews?category=asymmetric")
+          .expect(404)
+          .then(({body}) => {
+            expect(body.msg).toBe("Category not found");
+          })
+      })
+      it("status 200, responds with empty array when category exists but no games are assigned", () => {
+        return request(app)
+          .get("/api/reviews?category=children's_games")
+          .expect(200)
+          .then(({body}) => {
+            expect(Array.isArray(body.reviews)).toBe(true);
+            expect(body.reviews.length).toBe(0);
+          })
+      })
+    })
+  })
+
   describe("PATCH /api/reviews/:review_id", () => {
     describe("Happy path", () => {
       it("status: 200, responds with the updated review", () => {
