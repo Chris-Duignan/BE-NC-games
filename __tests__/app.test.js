@@ -15,9 +15,9 @@ describe("GET /api/categories", () => {
         .get("/api/categories")
         .expect(200)
         .then(({ body }) => {
-          expect(Array.isArray(body)).toBe(true);
-          expect(body.length).toBe(4);
-          body.forEach((category) => {
+          expect(Array.isArray(body.categories)).toBe(true);
+          expect(body.categories.length).toBe(4);
+          body.categories.forEach((category) => {
             expect(category).toEqual(
               expect.objectContaining({
                 slug: expect.any(String),
