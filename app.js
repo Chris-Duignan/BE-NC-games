@@ -1,19 +1,15 @@
 const express = require("express");
 const { getCategories } = require("./controllers/categoryControllers");
-<<<<<<< HEAD
 const {
   getReviewById,
   patchReviewVotesById,
 } = require("./controllers/reviewControllers");
+const {getUsers} = require("./controllers/usersControllers");
 const {
   handleCustomErrors,
   handlePSQLErrors,
   handleInternalError,
 } = require("./error_handling");
-=======
-const { getReviewById } = require("./controllers/reviewControllers");
-const { getUsers } = require("./controllers/usersControllers");
->>>>>>> main
 
 const app = express();
 app.use(express.json());
@@ -31,17 +27,7 @@ app.use((req, res, next) => {
   });
 });
 
-<<<<<<< HEAD
 app.use(handleCustomErrors);
-=======
-app.use((err, req, res, next) => {
-  if (err.status && err.msg) {
-    res.status(err.status).send({msg: err.msg});
-  } else {
-    next(err);
-  }
-});
->>>>>>> main
 
 app.use(handlePSQLErrors);
 

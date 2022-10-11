@@ -175,7 +175,6 @@ describe("Review endpoints", () => {
           .send({ inc_votes: 5, title: "Betrayal at House on the Hill" })
           .expect(200)
           .then(({ body }) => {
-            console.log(body.review)
             expect(body.review).toEqual({
               review_id: 1,
               title: "Agricola",
@@ -201,9 +200,9 @@ describe("GET /api/users", () => {
         .get("/api/users")
         .expect(200)
         .then(({ body }) => {
-          expect(Array.isArray(body)).toBe(true);
-          expect(body.length).toBe(4);
-          body.forEach((user) => {
+          expect(Array.isArray(body.users)).toBe(true);
+          expect(body.users.length).toBe(4);
+          body.users.forEach((user) => {
             expect(user).toEqual(
               expect.objectContaining({
                 username: expect.any(String),

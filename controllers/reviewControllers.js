@@ -4,11 +4,10 @@ const {
 } = require("../models/reviewModels");
 
 exports.getReviewById = (req, res, next) => {
-<<<<<<< HEAD
   const { review_id } = req.params;
   selectReviewById(review_id)
     .then((review) => {
-      res.status(200).send(review);
+      res.status(200).send({review});
     })
     .catch(next);
 };
@@ -21,10 +20,4 @@ exports.patchReviewVotesById = (req, res, next) => {
       res.status(200).send({review});
     })
     .catch(next);
-=======
-    const {review_id} = req.params;
-  selectReviewById(review_id).then((review) => {
-    res.status(200).send({review});
-  }).catch(next);
->>>>>>> main
 };
