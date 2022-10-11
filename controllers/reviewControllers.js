@@ -3,6 +3,9 @@ const {
   selectReviews,
   updateReviewVotesById,
 } = require("../models/reviewModels");
+const {
+  selectCategoryBySlug
+} = require("../models/categoryModels");
 
 exports.getReviewById = (req, res, next) => {
   const { review_id } = req.params;
@@ -15,8 +18,15 @@ exports.getReviewById = (req, res, next) => {
 
 exports.getReviews = (req, res, next)  => {
   const { category } = req.query;
-  selectReviews(category).then((reviews) => {
-    res.status(200).send({reviews});
+
+  const promises = [selectReviews(category)];
+
+  if(category) {
+    promises.push(selectCategoryBySlug(category))
+  }
+
+  Promise.all(promises).then((promises) => {
+    res.status(200).send({reviews: promises[0]})
   }).catch(next);
 }
 
