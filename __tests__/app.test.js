@@ -159,6 +159,33 @@ describe("Review endpoints", () => {
         })
       })
     })
+    describe("Error Handling", () => {
+      it("status 404: responds with error when incorrect path entered", () => {
+        return request(app)
+          .get("/api/notAPath")
+          .expect(404)
+          .then(({ body }) => {
+            expect(body.msg).toBe("Route not Found");
+          });
+      });
+      it("status 400, responds with error when category doesn't exist", () => {
+        return request(app)
+          .get("/api/reviews?category=asymmetric")
+          .expect(404)
+          .then(({body}) => {
+            expect(body.msg).toBe("Category not found");
+          })
+      })
+      it("status 200, responds with empty array when category exists but no games are assigned", () => {
+        return request(app)
+          .get("/api/reviews?category=children's_games")
+          .expect(200)
+          .then(({body}) => {
+            expect(Array.isArray(body.reviews)).toBe(true);
+            expect(body.reviews.length).toBe(0);
+          })
+      })
+    })
   })
 
   describe("PATCH /api/reviews/:review_id", () => {
