@@ -223,6 +223,33 @@ describe("Review endpoints", () => {
           })
       })
     });
+    describe("Error Handling", () => {
+      it("status 404: return error when review id does not exist", () => {
+        return request(app)
+          .get("/api/reviews/9999/comments")
+          .expect(404)
+          .then(({body}) => {
+            expect(body.msg).toBe("Id 9999 not Found")
+          })
+      })
+      it("status 400, responds with error when review ID entered incorrectly", () => {
+        return request(app)
+          .get("/api/reviews/notAnId/comments")
+          .expect(400)
+          .then(({body}) => {
+            expect(body.msg).toBe("Unexpected field type")
+          })
+      })
+      it("returns an empty array when review exists but has no comments", () => {
+        return request(app)
+          .get("/api/reviews/1/comments")
+          .expect(200)
+          .then(({body}) => {
+            expect(Array.isArray(body.comments)).toBe(true);
+            expect(body.comments.length).toBe(0);
+          })
+      })
+    })
   });
   describe("PATCH /api/reviews/:review_id", () => {
     describe("Happy path", () => {
