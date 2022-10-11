@@ -72,7 +72,7 @@ describe("Review endpoints", () => {
             expect(body.review.comment_count).toBe(0)
           })
       })
-      it("should have a coutn that works for a review with multiple comments", () => {
+      it("should have a count that works for a review with multiple comments", () => {
         return request(app)
           .get("/api/reviews/3")
           .expect(200)
