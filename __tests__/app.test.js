@@ -15,9 +15,9 @@ describe("GET /api/categories", () => {
         .get("/api/categories")
         .expect(200)
         .then(({ body }) => {
-          expect(Array.isArray(body)).toBe(true);
-          expect(body.length).toBe(4);
-          body.forEach((category) => {
+          expect(Array.isArray(body.categories)).toBe(true);
+          expect(body.categories.length).toBe(4);
+          body.categories.forEach((category) => {
             expect(category).toEqual(
               expect.objectContaining({
                 slug: expect.any(String),
@@ -48,7 +48,7 @@ describe("Review endpoints", () => {
           .get("/api/reviews/1")
           .expect(200)
           .then(({ body }) => {
-            expect(body).toEqual(
+            expect(body.review).toEqual(
               expect.objectContaining({
                 review_id: 1,
                 title: "Agricola",
@@ -192,4 +192,37 @@ describe("Review endpoints", () => {
       });
     });
   });
+});
+
+describe("GET /api/users", () => {
+  describe("Happy path", () => {
+    it("status: 200, responds wuth array of users", () => {
+      return request(app)
+        .get("/api/users")
+        .expect(200)
+        .then(({ body }) => {
+          expect(Array.isArray(body)).toBe(true);
+          expect(body.length).toBe(4);
+          body.forEach((user) => {
+            expect(user).toEqual(
+              expect.objectContaining({
+                username: expect.any(String),
+                name: expect.any(String),
+                avatar_url: expect.any(String),
+              })
+            );
+          });
+        });
+    });
+  });
+  describe("Error handling", () => {
+    it("status 404: responds with error when incorrect path entered", () => {
+      return request(app)
+        .get("/api/notAPath")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Route not Found");
+        });
+    });
+  })
 });
