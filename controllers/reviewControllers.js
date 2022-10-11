@@ -17,9 +17,15 @@ exports.getReviewById = (req, res, next) => {
 
 exports.getReviewCommentsById = (req, res, next) => {
   const { review_id } = req.params;
-  selectReviewCommentsById(review_id)
-    .then((comments) => {
-      res.status(200).send({ comments });
+
+  const promises = [
+    selectReviewById(review_id),
+    selectReviewCommentsById(review_id),
+  ];
+
+  Promise.all(promises)
+    .then((promises) => {
+      res.status(200).send({ comments: promises[1] });
     })
     .catch(next);
 };
