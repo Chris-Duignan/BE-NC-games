@@ -87,13 +87,13 @@ describe("Review endpoints", () => {
 
   describe("PATCH /api/reviews/:review_id", () => {
     describe("Happy path", () => {
-      it("status: 200, responds with the added review", () => {
+      it("status: 200, responds with the updated review", () => {
         return request(app)
           .patch("/api/reviews/1")
           .send({ inc_votes: 1 })
           .expect(200)
           .then(({ body }) => {
-            expect(body).toEqual(
+            expect(body.review).toEqual(
               expect.objectContaining({
                 review_id: 1,
                 title: "Agricola",
@@ -112,21 +112,84 @@ describe("Review endpoints", () => {
       it("status: 200, update reviews can increment votes by a value greater than 1", () => {
         return request(app)
           .patch("/api/reviews/1")
-          .send({inc_votes: 10})
+          .send({ inc_votes: 10 })
           .expect(200)
-          .then(({body}) => {
-            expect(body.votes).toBe(11);
-          })
-      })
+          .then(({ body }) => {
+            expect(body.review.votes).toBe(11);
+          });
+      });
       it("status: 200, can decrement votes when given a negative number", () => {
         return request(app)
           .patch("/api/reviews/1")
-          .send({inc_votes: -1})
+          .send({ inc_votes: -1 })
           .expect(200)
-          .then(({body}) => {
-            expect(body.votes).toBe(0);
-          })
-      })
+          .then(({ body }) => {
+            expect(body.review.votes).toBe(0);
+          });
+      });
+    });
+    describe("Error handling", () => {
+      //400: id entered incorrectly
+      it("status 400, responds with error when id entered in incorrect format", () => {
+        return request(app)
+          .patch("/api/reviews/notAnId")
+          .send({ inc_votes: 1 })
+          .expect(400)
+          .then(({ body }) => {
+            expect(body.msg).toBe("Unexpected field type");
+          });
+      });
+      //404: resource not found
+      it("status 404: id entered correctly but resource does not exist", () => {
+        return request(app)
+          .patch("/api/reviews/9999")
+          .send({ inc_votes: 1 })
+          .expect(404)
+          .then(({ body }) => {
+            expect(body.msg).toBe("Id 9999 not found");
+          });
+      });
+      //400: inc_votes in incorrect form
+      it("status: 400, return error when when correct request field is entered with incorrect datatype", () => {
+        return request(app)
+          .patch("/api/reviews/1")
+          .send({ inc_votes: "Wingspan" })
+          .expect(400)
+          .then(({ body }) => {
+            expect(body.msg).toBe("Unexpected field type");
+          });
+      });
+      //400: inc_votes missing
+      it("status: 400, returns error when inc_votes field missing from request body", () => {
+        return request(app)
+          .patch("/api/reviews/1")
+          .send({ title: "Spirit Island" })
+          .expect(400)
+          .then(({ body }) => {
+            expect(body.msg).toBe("Please enter inc_votes field");
+          });
+      });
+      it("should return an updated review when passed an object containing the correct field, and ignores extra requests", () => {
+        return request(app)
+          .patch("/api/reviews/1")
+          .send({ inc_votes: 5, title: "Betrayal at House on the Hill" })
+          .expect(200)
+          .then(({ body }) => {
+            console.log(body.review)
+            expect(body.review).toEqual({
+              review_id: 1,
+              title: "Agricola",
+              designer: "Uwe Rosenberg",
+              owner: "mallionaire",
+              review_img_url:
+                "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
+              review_body: "Farmyard fun!",
+              category: "euro game",
+              created_at: "2021-01-18T10:00:20.514Z",
+              votes: 6,
+            });
+          });
+      });
     });
   });
 });
