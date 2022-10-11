@@ -64,6 +64,22 @@ describe("Review endpoints", () => {
             );
           });
       });
+      it("should include a comment count field in the response object", () => {
+        return request(app)
+          .get("/api/reviews/1")
+          .expect(200)
+          .then(({body}) => {
+            expect(body.review.comment_count).toBe(0)
+          })
+      })
+      it("should have a coutn that works for a review with multiple comments", () => {
+        return request(app)
+          .get("/api/reviews/3")
+          .expect(200)
+          .then(({body}) => {
+            expect(body.review.comment_count).toBe(3);
+          })
+      })
     });
     describe("Error Handling", () => {
       it("error 404, responds with error when id does not exist", () => {
@@ -223,5 +239,5 @@ describe("GET /api/users", () => {
           expect(body.msg).toBe("Route not Found");
         });
     });
-  })
+  });
 });
