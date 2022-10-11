@@ -5,3 +5,18 @@ exports.selectCategories = () => {
     return categories;
   });
 };
+
+exports.selectCategoryBySlug = (slug) => {
+  slug = slug.replace("_", " ")
+  return db.query(
+    `SELECT * FROM categories
+    WHERE slug = $1;`,[slug]
+    )
+    .then(({rows: [category]}) => {
+      if(category === undefined) {
+        return Promise.reject({status: 404, msg: "Category not found"})
+      } else {
+        return category;
+      }
+    })
+}
