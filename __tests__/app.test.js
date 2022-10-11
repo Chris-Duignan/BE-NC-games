@@ -48,7 +48,7 @@ describe("Review endpoints", () => {
           .get("/api/reviews/1")
           .expect(200)
           .then(({ body }) => {
-            expect(body).toEqual(
+            expect(body.review).toEqual(
               expect.objectContaining({
                 review_id: 1,
                 title: "Agricola",
