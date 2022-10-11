@@ -13,6 +13,10 @@ exports.selectReviewById = (id) => {
 };
 
 exports.updateReviewVotesById = (id, update) => {
+  if (!update.inc_votes) {
+    return Promise.reject({ status: 400, msg: "Please enter inc_votes field" });
+  }
+
   const { inc_votes } = update;
   return db
     .query(
@@ -23,7 +27,11 @@ exports.updateReviewVotesById = (id, update) => {
       RETURNING *;`,
       [inc_votes, id]
     )
-    .then(({ rows: [review] }) => {
-      return review;
+    .then(({ rows: review }) => {
+      if (review.length === 0) {
+        return Promise.reject({ status: 404, msg: `Id ${id} not found` });
+      } else {
+        return review[0];
+      }
     });
 };
