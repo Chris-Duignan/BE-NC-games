@@ -35,7 +35,16 @@ exports.selectReviewCommentsById = (id) => {
     });
 };
 
-exports.selectReviews = (category, sort_by, order) => {
+exports.selectReviews = (category, sort_by = "created_at", order = "DESC") => {
+  validSortQueries = ["review_id", "category", "designer", "owner", "review_body", "review_img_url", "created_at", "votes"];
+  validOrderQueries = ["ASC", "DESC", "asc", "desc"];
+
+  if(!validSortQueries.includes(sort_by)) {
+    return Promise.reject({status: 400, msg: "Invalid sort query"});
+  } else if(!validOrderQueries.includes(order)) {
+    return Promise.reject({status: 400, msg: "Invalid order query"})
+  }
+
   let queryStr = `SELECT reviews.*, COUNT(comments.comment_id) ::INT AS comment_count
                     FROM reviews
                     LEFT JOIN comments
@@ -48,19 +57,9 @@ exports.selectReviews = (category, sort_by, order) => {
     queryStr += ` WHERE category = $1`;
   }
 
-  queryStr +=  " GROUP BY reviews.review_id"
+  queryStr += " GROUP BY reviews.review_id";
 
-  if (sort_by) {
-    queryStr += ` ORDER BY ${sort_by}`;
-  } else {
-    queryStr += ` ORDER BY created_at`;
-  }
-
-  if (order) {
-    queryStr += ` ${order};`;
-  } else {
-    queryStr += " DESC;"
-  };
+  queryStr += ` ORDER BY ${sort_by} ${order}`
 
   return db.query(queryStr, queryValues).then(({ rows: reviews }) => {
     return reviews;
