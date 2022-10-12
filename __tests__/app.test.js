@@ -265,12 +265,62 @@ describe("Review endpoints", () => {
             const { comment } = body;
             expect(comment).toEqual({
               comment_id: 7,
-              username: "dav3rid",
+              review_id: 1,
+              author: "dav3rid",
               body: "Totally agree",
+              votes: 0,
+              created_at: expect.any(String)
             });
           });
       });
     });
+    describe("Error Handling", () => {
+      it("status 404, review id not found", () => {
+        return request(app)
+          .post("/api/reviews/9999/comments")
+          .send({ username: "dav3rid", body: "Totally agree" })
+          .expect(404)
+          .then(({body}) => {
+            expect(body.msg).toBe("Id 9999 not Found");
+          })
+      })
+      it("status: 400, review id entered in incorrect form", () => {
+        return request(app)
+          .post("/api/reviews/notAnId/comments")
+          .send({username: "dav3rid", body: "Totally agree"})
+          .expect(400)
+          .then(({body}) => {
+            expect(body.msg).toBe("Unexpected field type")
+          })
+      })
+      it("status: 400, request body missing required fields", () => {
+        return request(app)
+          .post("/api/reviews/1/comments")
+          .send({})
+          .expect(400)
+          .then(({body}) => {
+            expect(body.msg).toBe("Required fields missing");
+          })
+      })
+      it("status: 400, responds with error when request fields in incorrect datatype", () => {
+        return request(app)
+          .post("/api/reviews/1/comments")
+          .send({username: "unknown", body: 1234})
+          .expect(400)
+          .then(({body}) => {
+            expect(body.msg).toBe("Unexpected field type");
+          })
+      })
+      it("status: 404, responds with error when user doesn't exist", () => {
+        return request(app)
+          .post("/api/reviews/1/comments")
+          .send({username: "unknown", body: "Hello"})
+          .expect(404)
+          .then(({body}) => {
+            expect(body.msg).toBe("User unknown not found")
+          })
+      })
+    })
   });
 
   describe("PATCH /api/reviews/:review_id", () => {
