@@ -305,7 +305,7 @@ describe("Review endpoints", () => {
       it("status: 400, responds with error when request fields in incorrect datatype", () => {
         return request(app)
           .post("/api/reviews/1/comments")
-          .send({username: "unknown", body: 1234})
+          .send({username: "dav3rid", body: 1234})
           .expect(400)
           .then(({body}) => {
             expect(body.msg).toBe("Unexpected field type");
