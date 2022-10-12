@@ -218,39 +218,61 @@ describe("Review endpoints", () => {
         return request(app)
           .get("/api/reviews/3/comments")
           .expect(200)
-          .then(({body}) => {
-            expect(body.comments).toBeSortedBy("created_at", {descending: true});
-          })
-      })
+          .then(({ body }) => {
+            expect(body.comments).toBeSortedBy("created_at", {
+              descending: true,
+            });
+          });
+      });
     });
     describe("Error Handling", () => {
       it("status 404: return error when review id does not exist", () => {
         return request(app)
           .get("/api/reviews/9999/comments")
           .expect(404)
-          .then(({body}) => {
-            expect(body.msg).toBe("Id 9999 not Found")
-          })
-      })
+          .then(({ body }) => {
+            expect(body.msg).toBe("Id 9999 not Found");
+          });
+      });
       it("status 400, responds with error when review ID entered incorrectly", () => {
         return request(app)
           .get("/api/reviews/notAnId/comments")
           .expect(400)
-          .then(({body}) => {
-            expect(body.msg).toBe("Unexpected field type")
-          })
-      })
+          .then(({ body }) => {
+            expect(body.msg).toBe("Unexpected field type");
+          });
+      });
       it("returns an empty array when review exists but has no comments", () => {
         return request(app)
           .get("/api/reviews/1/comments")
           .expect(200)
-          .then(({body}) => {
+          .then(({ body }) => {
             expect(Array.isArray(body.comments)).toBe(true);
             expect(body.comments.length).toBe(0);
-          })
-      })
-    })
+          });
+      });
+    });
   });
+
+  describe("POST /api/reviews/:review_id/comments", () => {
+    describe("Happy Path", () => {
+      it("status 201: responds with new comment just posted", () => {
+        return request(app)
+          .post("/api/reviews/1/comments")
+          .send({ username: "dav3rid", body: "Totally agree" })
+          .expect(201)
+          .then(({ body }) => {
+            const { comment } = body;
+            expect(comment).toEqual({
+              comment_id: 7,
+              username: "dav3rid",
+              body: "Totally agree",
+            });
+          });
+      });
+    });
+  });
+
   describe("PATCH /api/reviews/:review_id", () => {
     describe("Happy path", () => {
       it("status: 200, responds with the updated review", () => {
