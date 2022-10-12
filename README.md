@@ -26,6 +26,7 @@ Review Id must be entered as a digit/s.
 
 This endpoint will return an array of users from the users table.
 
+
 ## PATCH /api/reviews/:review_id
 
 This endpoint will allow you to increment or decrement a chosen reviews vote property.
@@ -33,6 +34,10 @@ This endpoint will allow you to increment or decrement a chosen reviews vote pro
 The request must be formatted as {inc_votes: <//digits to change the votes by>}.
 
 Extra changes requested will be ignored by this endpoint.
+
+## POST /api/reviews/:review_id/comments
+
+This endpoint accepts an object e.g. {username: <//existing_user>, body: "comment message"} and posts it to the comments table. 
 
 ## GET /api/reviews
 
