@@ -1,4 +1,5 @@
 const db = require("../db/connection");
+const { sort } = require("../db/data/test-data/categories");
 
 exports.selectReviewById = (id) => {
   return db
@@ -34,7 +35,7 @@ exports.selectReviewCommentsById = (id) => {
     });
 };
 
-exports.selectReviews = (category) => {
+exports.selectReviews = (category, sort_by, order) => {
   let queryStr = `SELECT reviews.*, COUNT(comments.comment_id) ::INT AS comment_count
                     FROM reviews
                     LEFT JOIN comments
@@ -47,8 +48,19 @@ exports.selectReviews = (category) => {
     queryStr += ` WHERE category = $1`;
   }
 
-  queryStr += ` GROUP BY reviews.review_id
-               ORDER BY created_at DESC;`;
+  queryStr +=  " GROUP BY reviews.review_id"
+
+  if (sort_by) {
+    queryStr += ` ORDER BY ${sort_by}`;
+  } else {
+    queryStr += ` ORDER BY created_at`;
+  }
+
+  if (order) {
+    queryStr += ` ${order};`;
+  } else {
+    queryStr += " DESC;"
+  };
 
   return db.query(queryStr, queryValues).then(({ rows: reviews }) => {
     return reviews;
