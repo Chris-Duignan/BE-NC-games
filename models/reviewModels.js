@@ -20,6 +20,20 @@ exports.selectReviewById = (id) => {
     });
 };
 
+exports.selectReviewCommentsById = (id) => {
+  return db
+    .query(
+      `SELECT *
+      FROM comments
+      WHERE review_id = $1
+      ORDER BY created_at DESC`,
+      [id]
+    )
+    .then(({ rows: comments }) => {
+      return comments;
+    });
+};
+
 exports.selectReviews = (category) => {
   let queryStr = `SELECT reviews.*, COUNT(comments.comment_id) ::INT AS comment_count
                     FROM reviews

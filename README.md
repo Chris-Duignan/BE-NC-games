@@ -39,3 +39,9 @@ Extra changes requested will be ignored by this endpoint.
 This endpoint will return an array of all reviews when no query is present.
 
 This endpoint accepts a category query which will filter the reviews by the category selected.
+
+## GET /api/reviews/:review_id/commments
+
+This endpoint will return an array of all comments associated with a specified review.
+
+:review_id must be entered as a digit/digits.
