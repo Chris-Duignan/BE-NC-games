@@ -245,12 +245,14 @@ describe("Review endpoints", () => {
         return request(app)
           .get("/api/reviews/3/comments")
           .expect(200)
-          .then(({ body }) => {
+          .then(({  body  }) => {
             expect(body.comments).toBeSortedBy("created_at", {
+              
               descending: true,
+            
             });
-          });
-      });
+          });;
+      });;
     });
     describe("Error Handling", () => {
       it("status 404: return error when review id does not exist", () => {
@@ -280,6 +282,76 @@ describe("Review endpoints", () => {
       });
     });
   });
+
+  describe("POST /api/reviews/:review_id/comments", () => {
+    describe("Happy Path", () => {
+      it("status 201: responds with new comment just posted", () => {
+        return request(app)
+          .post("/api/reviews/1/comments")
+          .send({ username: "dav3rid", body: "Totally agree" })
+          .expect(201)
+          .then(({ body }) => {
+            const { comment } = body;
+            expect(comment).toEqual({
+              comment_id: 7,
+              review_id: 1,
+              author: "dav3rid",
+              body: "Totally agree",
+              votes: 0,
+              created_at: expect.any(String)
+            });
+          });
+      });
+    });
+    describe("Error Handling", () => {
+      it("status 404, review id not found", () => {
+        return request(app)
+          .post("/api/reviews/9999/comments")
+          .send({ username: "dav3rid", body: "Totally agree" })
+          .expect(404)
+          .then(({ body }) => {
+            expect(body.msg).toBe("Id 9999 not Found");;
+          });
+      });
+      it("status: 400, review id entered in incorrect form", () => {
+        return request(app)
+          .post("/api/reviews/notAnId/comments")
+          .send({username: "dav3rid", body: "Totally agree"})
+          .expect(400)
+          .then(({body}) => {
+            expect(body.msg).toBe("Unexpected field type")
+          })
+      })
+      it("status: 400, request body missing required fields", () => {
+        return request(app)
+          .post("/api/reviews/1/comments")
+          .send({})
+          .expect(400)
+          .then(({body}) => {
+            expect(body.msg).toBe("Required fields missing");
+          })
+      })
+      it("status: 400, responds with error when request fields in incorrect datatype", () => {
+        return request(app)
+          .post("/api/reviews/1/comments")
+          .send({username: "dav3rid", body: 1234})
+          .expect(400)
+          .then(({body}) => {
+            expect(body.msg).toBe("Unexpected field type");
+          })
+      })
+      it("status: 404, responds with error when user doesn't exist", () => {
+        return request(app)
+          .post("/api/reviews/1/comments")
+          .send({username: "unknown", body: "Hello"})
+          .expect(404)
+          .then(({body}) => {
+            expect(body.msg).toBe("User unknown not found")
+          })
+      })
+    })
+  });
+
   describe("PATCH /api/reviews/:review_id", () => {
     describe("Happy path", () => {
       it("status: 200, responds with the updated review", () => {

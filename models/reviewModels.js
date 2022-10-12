@@ -67,6 +67,29 @@ exports.selectReviews = (category, sort_by, order) => {
   });
 };
 
+exports.insertCommentByReviewId = (id, comment) => {
+  const { username, body } = comment;
+
+  if (!username || !body) {
+    return Promise.reject({ status: 400, msg: "Required fields missing" });
+  } else if (typeof username !== "string" || typeof body !== "string") {
+    return Promise.reject({ status: 400, msg: "Unexpected field type" });
+  } else {
+    return db
+      .query(
+        `INSERT INTO comments
+          (author, body, review_id)
+        VALUES 
+          ($1, $2, $3)
+        RETURNING *`,
+        [username, body, id]
+      )
+      .then(({ rows: comment }) => {
+        return comment[0];
+      });
+  }
+};
+
 exports.updateReviewVotesById = (id, update) => {
   if (!update.inc_votes) {
     return Promise.reject({ status: 400, msg: "Please enter inc_votes field" });
