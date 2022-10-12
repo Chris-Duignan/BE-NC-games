@@ -161,11 +161,29 @@ describe("Review endpoints", () => {
         });
         it("should accept a sort_by query which sorts articles by date", () => {
           return request(app)
-            .get("/api/reviews?sort_by=date")
+            .get("/api/reviews?sort_by=created_at")
             .expect(200)
             .then(({ body }) => {
               const { reviews } = body;
-              expect(reviews).toBeSortedBy("date", { descending: true });
+              expect(reviews).toBeSortedBy("created_at", { descending: true });
+            });
+        });
+        it("should sort reviews by any valid column name", () => {
+          return request(app)
+            .get("/api/reviews?sort_by=owner")
+            .expect(200)
+            .then(({ body }) => {
+              const { reviews } = body;
+              expect(reviews).toBeSortedBy("owner", { descending: true });
+            });
+        });
+        it("should accept an order query which can be set to asc or desc", () => {
+          return request(app)
+            .get("/api/reviews?order=asc")
+            .expect(200)
+            .then(({ body }) => {
+              const { reviews } = body;
+              expect(reviews).toBeSortedBy("created_at", { descending: false });
             });
         });
       });
@@ -372,7 +390,7 @@ describe("Review endpoints", () => {
 
 describe("GET /api/users", () => {
   describe("Happy path", () => {
-    it("status: 200, responds wuth array of users", () => {
+    it("status: 200, responds with array of users", () => {
       return request(app)
         .get("/api/users")
         .expect(200)
