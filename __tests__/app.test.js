@@ -54,16 +54,6 @@ describe("GET /api/categories", () => {
         });
     });
   });
-  describe("Error handling", () => {
-    it("status 404: responds with error when incorrect path entered", () => {
-      return request(app)
-        .get("/api/notAPath")
-        .expect(404)
-        .then(({ body }) => {
-          expect(body.msg).toBe("Route not Found");
-        });
-    });
-  });
 });
 
 describe("Review endpoints", () => {
@@ -215,14 +205,6 @@ describe("Review endpoints", () => {
       });
     });
     describe("Error Handling", () => {
-      it("status 404: responds with error when incorrect path entered", () => {
-        return request(app)
-          .get("/api/notAPath")
-          .expect(404)
-          .then(({ body }) => {
-            expect(body.msg).toBe("Route not Found");
-          });
-      });
       it("status 400, responds with error when category doesn't exist", () => {
         return request(app)
           .get("/api/reviews?category=asymmetric")
@@ -518,16 +500,6 @@ describe("GET /api/users", () => {
               })
             );
           });
-        });
-    });
-  });
-  describe("Error handling", () => {
-    it("status 404: responds with error when incorrect path entered", () => {
-      return request(app)
-        .get("/api/notAPath")
-        .expect(404)
-        .then(({ body }) => {
-          expect(body.msg).toBe("Route not Found");
         });
     });
   });
