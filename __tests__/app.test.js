@@ -463,3 +463,23 @@ describe("GET /api/users", () => {
     });
   });
 });
+
+describe("DELETE /api/comments/:comment_id", () => {
+  describe("Happy Path", () => {
+    it("status: 204, no response to be returned", () => {
+      return request(app)
+        .delete("/api/comments/1")
+        .expect(204)
+    })
+  })
+  describe("Error Handling", () => {
+    it("status: 404, id entered correctly but does not exist", () => {
+      return request(app)
+        .delete("/api/comments/9999")
+        .expect(404)
+        .then(({body}) => {
+          expect(body.msg).toBe("Id 9999 not found");
+        })
+    })
+  })
+})
