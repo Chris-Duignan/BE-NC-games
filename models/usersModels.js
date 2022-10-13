@@ -17,6 +17,8 @@ exports.selectUserByUsername = (username) =>{
         ).then(({rows: [user]}) => {
             if (!user) {
                 return Promise.reject({status: 404, msg: `User ${username} not found`})
+            } else {
+                return user;
             }
         })
 }
