@@ -418,7 +418,6 @@ describe("Review endpoints", () => {
       });
     });
     describe("Error handling", () => {
-      //400: id entered incorrectly
       it("status 400, responds with error when id entered in incorrect format", () => {
         return request(app)
           .patch("/api/reviews/notAnId")
@@ -428,7 +427,6 @@ describe("Review endpoints", () => {
             expect(body.msg).toBe("Unexpected field type");
           });
       });
-      //404: resource not found
       it("status 404: id entered correctly but resource does not exist", () => {
         return request(app)
           .patch("/api/reviews/9999")
@@ -438,7 +436,6 @@ describe("Review endpoints", () => {
             expect(body.msg).toBe("Id 9999 not found");
           });
       });
-      //400: inc_votes in incorrect form
       it("status: 400, return error when when correct request field is entered with incorrect datatype", () => {
         return request(app)
           .patch("/api/reviews/1")
@@ -448,7 +445,6 @@ describe("Review endpoints", () => {
             expect(body.msg).toBe("Unexpected field type");
           });
       });
-      //400: inc_votes missing
       it("status: 400, returns error when inc_votes field missing from request body", () => {
         return request(app)
           .patch("/api/reviews/1")
@@ -482,25 +478,44 @@ describe("Review endpoints", () => {
   });
 });
 
-describe("GET /api/users", () => {
-  describe("Happy path", () => {
-    it("status: 200, responds with array of users", () => {
-      return request(app)
-        .get("/api/users")
-        .expect(200)
-        .then(({ body }) => {
-          expect(Array.isArray(body.users)).toBe(true);
-          expect(body.users.length).toBe(4);
-          body.users.forEach((user) => {
-            expect(user).toEqual(
-              expect.objectContaining({
-                username: expect.any(String),
-                name: expect.any(String),
-                avatar_url: expect.any(String),
-              })
-            );
+describe("User endpoints", () => {
+  describe("GET /api/users", () => {
+    describe("Happy path", () => {
+      it("status: 200, responds with array of users", () => {
+        return request(app)
+          .get("/api/users")
+          .expect(200)
+          .then(({ body }) => {
+            expect(Array.isArray(body.users)).toBe(true);
+            expect(body.users.length).toBe(4);
+            body.users.forEach((user) => {
+              expect(user).toEqual(
+                expect.objectContaining({
+                  username: expect.any(String),
+                  name: expect.any(String),
+                  avatar_url: expect.any(String),
+                })
+              );
+            });
           });
-        });
+      });
+    });
+  });
+  describe("GET /api/users/:username", () => {
+    describe("Happy Path", () => {
+      it("status 200, responds with selected user", () => {
+        return request(app)
+          .get("/api/users/dav3rid")
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.user).toEqual({
+              username: "dav3rid",
+              name: "dave",
+              avatar_url:
+                "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
+            });
+          });
+      });
     });
   });
 });
