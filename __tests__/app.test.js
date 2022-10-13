@@ -28,7 +28,7 @@ describe("GET /api", () => {
         .then(({ body }) => {
           expect(body).toBeObject();
           expect(body.endpoints).toBeObject();
-          expect(Object.keys(body.endpoints).length).toBe(9);
+          expect(Object.keys(body.endpoints).length).toBe(10);
         });
     });
   });
@@ -545,7 +545,23 @@ describe("Comments endpoints", () => {
               votes: 17,
               author: "bainesface",
               review_id: 2,
-              created_at: new Date(1511354613389),
+              created_at: "2017-11-22T12:43:33.389Z",
+            });
+          });
+      });
+      it("status 200, returns updated comment when decremented", () => {
+        return request(app)
+          .patch("/api/comments/1")
+          .send({ inc_votes: -1 })
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.comment).toEqual({
+              comment_id: 1,
+              body: "I loved this game too!",
+              votes: 15,
+              author: "bainesface",
+              review_id: 2,
+              created_at: "2017-11-22T12:43:33.389Z",
             });
           });
       });
