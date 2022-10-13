@@ -1,4 +1,5 @@
 const express = require("express");
+const { getEndpoints } = require("./controllers/api.controller")
 const { getCategories } = require("./controllers/categoryControllers");
 const {
   getReviewById,
@@ -17,6 +18,8 @@ const {
 
 const app = express();
 app.use(express.json());
+
+app.get("/api", getEndpoints);
 
 app.get("/api/categories", getCategories);
 
