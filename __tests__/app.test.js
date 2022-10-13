@@ -530,28 +530,50 @@ describe("User endpoints", () => {
   });
 });
 
-describe("DELETE /api/comments/:comment_id", () => {
-  describe("Happy Path", () => {
-    it("status: 204, no response to be returned", () => {
-      return request(app).delete("/api/comments/1").expect(204);
+describe("Comments endpoints", () => {
+  describe("PATCH /api/comments/:comment_id", () => {
+    describe("Happy path", () => {
+      it("status 200, returns updated comment when incremented", () => {
+        return request(app)
+          .patch("/api/comments/1")
+          .send({ inc_votes: 1 })
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.comment).toEqual({
+              comment_id: 1,
+              body: "I loved this game too!",
+              votes: 17,
+              author: "bainesface",
+              review_id: 2,
+              created_at: new Date(1511354613389),
+            });
+          });
+      });
     });
   });
-  describe("Error Handling", () => {
-    it("status: 404, id entered correctly but does not exist", () => {
-      return request(app)
-        .delete("/api/comments/9999")
-        .expect(404)
-        .then(({ body }) => {
-          expect(body.msg).toBe("Id 9999 not found");
-        });
+  describe("DELETE /api/comments/:comment_id", () => {
+    describe("Happy Path", () => {
+      it("status: 204, no response to be returned", () => {
+        return request(app).delete("/api/comments/1").expect(204);
+      });
     });
-    it("status : 400, id entered in incorrect format", () => {
-      return request(app)
-        .delete("/api/comments/notAnId")
-        .expect(400)
-        .then(({ body }) => {
-          expect(body.msg).toBe("Unexpected field type");
-        });
+    describe("Error Handling", () => {
+      it("status: 404, id entered correctly but does not exist", () => {
+        return request(app)
+          .delete("/api/comments/9999")
+          .expect(404)
+          .then(({ body }) => {
+            expect(body.msg).toBe("Id 9999 not found");
+          });
+      });
+      it("status : 400, id entered in incorrect format", () => {
+        return request(app)
+          .delete("/api/comments/notAnId")
+          .expect(400)
+          .then(({ body }) => {
+            expect(body.msg).toBe("Unexpected field type");
+          });
+      });
     });
   });
 });
