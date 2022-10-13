@@ -1,5 +1,4 @@
 const express = require("express");
-const { getEndpoints } = require("./controllers/api.controller")
 const { getCategories } = require("./controllers/categoryControllers");
 const {
   getReviewById,
@@ -15,11 +14,13 @@ const {
   handlePSQLErrors,
   handleInternalError,
 } = require("./error_handling");
+const apiRouter = require("./routes/api-router");
 
 const app = express();
 app.use(express.json());
 
-app.get("/api", getEndpoints);
+
+app.get("/api", apiRouter);
 
 app.get("/api/categories", getCategories);
 
