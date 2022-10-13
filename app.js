@@ -8,6 +8,7 @@ const {
   patchReviewVotesById,
 } = require("./controllers/reviewControllers");
 const {getUsers} = require("./controllers/usersControllers");
+const {deleteCommentById} = require("./controllers/comment.controllers");
 const {
   handleCustomErrors,
   handlePSQLErrors,
@@ -25,8 +26,9 @@ app.get("/api/reviews/:review_id/comments", getReviewCommentsById);
 app.post("/api/reviews/:review_id/comments", postCommentByReviewId);
 app.patch("/api/reviews/:review_id", patchReviewVotesById);
 
-
 app.get("/api/users", getUsers);
+
+app.delete("/api/comments/:comment_id", deleteCommentById)
 
 app.use((req, res, next) => {
   res.status(404).send({
