@@ -53,3 +53,9 @@ Queries:
 This endpoint will return an array of all comments associated with a specified review.
 
 :review_id must be entered as a digit/digits.
+
+## DELETE /api/comments/:comment_id
+
+This endpoint will delete a comment by the selected id.
+
+:comment_id must be entered as a digit/digits.
