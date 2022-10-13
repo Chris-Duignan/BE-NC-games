@@ -111,6 +111,17 @@
       ]
     }
   },
+  "GET /api/users/:username": {
+    "description": "serves a user object specified by username",
+    "queries": [],
+    "exampleResponse": {
+      "user": {
+        "username": "dav3rid",
+        "name": "dave",
+        "avatar_url": "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png"
+      }
+    }
+  },
   "DELETE /api/comments/:comment_id": {
     "description": "deletes selected comment returning no content"
   }
