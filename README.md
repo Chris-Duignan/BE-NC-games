@@ -46,6 +46,23 @@ npm install
 
 This will install all relevant packages using the depencies listed in the package.json.
 
+Seed Local Database:
+
+To seed the local database, run the following commands:
+
+```
+npm run setup-dbs
+npm run seed
+```
+
+Testing:
+
+To run the tests in __tests__, enter the following command in your terminal:
+
+```
+npm test
+```
+
 
 ## Setting up .env Files
 
@@ -59,5 +76,5 @@ Add these files to your .gitignore and your env variables should now be set.
 
 ## Minimum Requirements
 
-Node.js: 18.6.0
+Node.js: 18.6.0,
 Postgres: 14.5
