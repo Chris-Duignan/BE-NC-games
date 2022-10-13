@@ -8,18 +8,20 @@ beforeEach(() => seed(testData));
 
 afterAll(() => db.end());
 
-describe("GET /api" ,() => {
+describe("GET /api", () => {
   describe("Happy Path", () => {
-    it("status: 200, responds with json describing all available endpoints", () => {
+    it("status: 200, responds with json containing endpoints.json", () => {
       return request(app)
         .get("/api")
         .expect(200)
-        .then(({body}) => {
+        .then(({ body }) => {
           expect(body).toBeObject();
-        })
-    })
-  })
-})
+          expect(body.endpoints).toBeObject();
+          expect(Object.keys(body.endpoints).length).toBe(9);
+        });
+    });
+  });
+});
 
 describe("GET /api/categories", () => {
   describe("Happy Path", () => {
@@ -523,27 +525,25 @@ describe("GET /api/users", () => {
 describe("DELETE /api/comments/:comment_id", () => {
   describe("Happy Path", () => {
     it("status: 204, no response to be returned", () => {
-      return request(app)
-        .delete("/api/comments/1")
-        .expect(204)
-    })
-  })
+      return request(app).delete("/api/comments/1").expect(204);
+    });
+  });
   describe("Error Handling", () => {
     it("status: 404, id entered correctly but does not exist", () => {
       return request(app)
         .delete("/api/comments/9999")
         .expect(404)
-        .then(({body}) => {
+        .then(({ body }) => {
           expect(body.msg).toBe("Id 9999 not found");
-        })
-    })
+        });
+    });
     it("status : 400, id entered in incorrect format", () => {
       return request(app)
         .delete("/api/comments/notAnId")
         .expect(400)
-        .then(({body}) => {
+        .then(({ body }) => {
           expect(body.msg).toBe("Unexpected field type");
-        })
-    })
-  })
-})
+        });
+    });
+  });
+});
