@@ -8,6 +8,19 @@ beforeEach(() => seed(testData));
 
 afterAll(() => db.end());
 
+describe("GET /api" ,() => {
+  describe("Happy Path", () => {
+    it("status: 200, responds with json describing all available endpoints", () => {
+      return request(app)
+        .get("/api")
+        .expect(200)
+        .then(({body}) => {
+          expect(body).toBeObject();
+        })
+    })
+  })
+})
+
 describe("GET /api/categories", () => {
   describe("Happy Path", () => {
     it("status: 200, responds with array of categories", () => {
