@@ -481,5 +481,13 @@ describe("DELETE /api/comments/:comment_id", () => {
           expect(body.msg).toBe("Id 9999 not found");
         })
     })
+    it("status : 400, id entered in incorrect format", () => {
+      return request(app)
+        .delete("/api/comments/notAnId")
+        .expect(400)
+        .then(({body}) => {
+          expect(body.msg).toBe("Unexpected field type");
+        })
+    })
   })
 })
