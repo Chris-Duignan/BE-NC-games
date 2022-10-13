@@ -517,6 +517,16 @@ describe("User endpoints", () => {
           });
       });
     });
+    describe("Error Handling", () => {
+      it("status 404, username not found", () => {
+        return request(app)
+          .get("/api/users/thadenox")
+          .expect(404)
+          .then(({ body }) => {
+            expect(body.msg).toBe("User thadenox not found");
+          });
+      });
+    });
   });
 });
 
