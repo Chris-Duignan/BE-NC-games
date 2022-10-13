@@ -159,6 +159,33 @@ describe("Review endpoints", () => {
               });
             });
         });
+        it("should accept a sort_by query which sorts articles by date", () => {
+          return request(app)
+            .get("/api/reviews?sort_by=created_at")
+            .expect(200)
+            .then(({ body }) => {
+              const { reviews } = body;
+              expect(reviews).toBeSortedBy("created_at", { descending: true });
+            });
+        });
+        it("should sort reviews by any valid column name", () => {
+          return request(app)
+            .get("/api/reviews?sort_by=owner")
+            .expect(200)
+            .then(({ body }) => {
+              const { reviews } = body;
+              expect(reviews).toBeSortedBy("owner", { descending: true });
+            });
+        });
+        it("should accept an order query which can be set to asc or desc", () => {
+          return request(app)
+            .get("/api/reviews?order=asc")
+            .expect(200)
+            .then(({ body }) => {
+              const { reviews } = body;
+              expect(reviews).toBeSortedBy("created_at", { descending: false });
+            });
+        });
       });
     });
     describe("Error Handling", () => {
@@ -185,6 +212,22 @@ describe("Review endpoints", () => {
           .then(({ body }) => {
             expect(Array.isArray(body.reviews)).toBe(true);
             expect(body.reviews.length).toBe(0);
+          });
+      });
+      it("status 400: rejects sort_by column not in table", () => {
+        return request(app)
+          .get("/api/reviews?sort_by=bad_request")
+          .expect(400)
+          .then(({ body }) => {
+            expect(body.msg).toBe("Invalid sort query");
+          });
+      });
+      it("status 400: rejects invalid order query", () => {
+        return request(app)
+          .get("/api/reviews?order=left")
+          .expect(400)
+          .then(({ body }) => {
+            expect(body.msg).toBe("Invalid order query");
           });
       });
     });
@@ -269,7 +312,7 @@ describe("Review endpoints", () => {
               author: "dav3rid",
               body: "Totally agree",
               votes: 0,
-              created_at: expect.any(String)
+              created_at: expect.any(String),
             });
           });
       });
@@ -280,47 +323,47 @@ describe("Review endpoints", () => {
           .post("/api/reviews/9999/comments")
           .send({ username: "dav3rid", body: "Totally agree" })
           .expect(404)
-          .then(({body}) => {
+          .then(({ body }) => {
             expect(body.msg).toBe("Id 9999 not Found");
-          })
-      })
+          });
+      });
       it("status: 400, review id entered in incorrect form", () => {
         return request(app)
           .post("/api/reviews/notAnId/comments")
-          .send({username: "dav3rid", body: "Totally agree"})
+          .send({ username: "dav3rid", body: "Totally agree" })
           .expect(400)
-          .then(({body}) => {
-            expect(body.msg).toBe("Unexpected field type")
-          })
-      })
+          .then(({ body }) => {
+            expect(body.msg).toBe("Unexpected field type");
+          });
+      });
       it("status: 400, request body missing required fields", () => {
         return request(app)
           .post("/api/reviews/1/comments")
           .send({})
           .expect(400)
-          .then(({body}) => {
+          .then(({ body }) => {
             expect(body.msg).toBe("Required fields missing");
-          })
-      })
+          });
+      });
       it("status: 400, responds with error when request fields in incorrect datatype", () => {
         return request(app)
           .post("/api/reviews/1/comments")
-          .send({username: "dav3rid", body: 1234})
+          .send({ username: "dav3rid", body: 1234 })
           .expect(400)
-          .then(({body}) => {
+          .then(({ body }) => {
             expect(body.msg).toBe("Unexpected field type");
-          })
-      })
+          });
+      });
       it("status: 404, responds with error when user doesn't exist", () => {
         return request(app)
           .post("/api/reviews/1/comments")
-          .send({username: "unknown", body: "Hello"})
+          .send({ username: "unknown", body: "Hello" })
           .expect(404)
-          .then(({body}) => {
-            expect(body.msg).toBe("User unknown not found")
-          })
-      })
-    })
+          .then(({ body }) => {
+            expect(body.msg).toBe("User unknown not found");
+          });
+      });
+    });
   });
 
   describe("PATCH /api/reviews/:review_id", () => {
@@ -433,7 +476,7 @@ describe("Review endpoints", () => {
 
 describe("GET /api/users", () => {
   describe("Happy path", () => {
-    it("status: 200, responds wuth array of users", () => {
+    it("status: 200, responds with array of users", () => {
       return request(app)
         .get("/api/users")
         .expect(200)

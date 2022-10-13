@@ -26,7 +26,6 @@ Review Id must be entered as a digit/s.
 
 This endpoint will return an array of users from the users table.
 
-
 ## PATCH /api/reviews/:review_id
 
 This endpoint will allow you to increment or decrement a chosen reviews vote property.
@@ -37,13 +36,17 @@ Extra changes requested will be ignored by this endpoint.
 
 ## POST /api/reviews/:review_id/comments
 
-This endpoint accepts an object e.g. {username: <//existing_user>, body: "comment message"} and posts it to the comments table. 
+This endpoint accepts an object e.g. {username: <//existing_user>, body: "comment message"} and posts it to the comments table.
 
 ## GET /api/reviews
 
 This endpoint will return an array of all reviews when no query is present.
 
-This endpoint accepts a category query which will filter the reviews by the category selected.
+Queries:
+
+- category=<//name of category> - filters by category selected
+- sort_by=<//column name> - sorts by selected column
+- order=<//asc or desc> - orders reviews either ascending or descending.
 
 ## GET /api/reviews/:review_id/commments
 
