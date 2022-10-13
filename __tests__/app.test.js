@@ -8,6 +8,17 @@ beforeEach(() => seed(testData));
 
 afterAll(() => db.end());
 
+describe("Generic error handling", () => {
+  it("Status 404, invalid path entered", () => {
+    return request(app)
+      .get("/notAPath")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Route not Found");
+      });
+  });
+});
+
 describe("GET /api", () => {
   describe("Happy Path", () => {
     it("status: 200, responds with json containing endpoints.json", () => {
