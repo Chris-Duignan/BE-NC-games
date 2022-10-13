@@ -1,61 +1,63 @@
 # Northcoders House of Games API
 
+## Hosted Version
+
+Please visit the hosted app at https://board-games-galore.herokuapp.com/api. This takes you to a dictionary of available endpoints which can be added to the URL to view the functionality of the app.
+
+## Summary of the project
+
+The aim of this project was to build an API to access app data. The database used is PSQL, which I interacted with using node-postgres.
+
+The API is for a board game review database containing 4 tables: reviews, categories, users, and comments. This allows for users to post reviews and comment on each others reviews on various board games.
+
+The technologies used include: 
+- JS
+- PSQL
+- Node.js
+- Express
+
+## Set-up
+
+Cloning: 
+
+From your terminal enter the following command with the url to this repo to clone.
+
+``` 
+git clone repo_url
+```
+
+Create a new GitHub repository minus a readme, .gitignore, and license.
+
+Navigate to your local cloned repo and push the code to your new repo using the following commands:
+
+```
+git remote set-url origin YOUR_NEW_REPO_URL_HERE
+git branch -M main
+git push -u origin main
+```
+
+Installing dependecies:
+
+From your cloned repo terminal, enter:
+
+```
+npm install
+```
+
+This will install all relevant packages using the depencies listed in the package.json.
+
+
 ## Setting up .env Files
 
 This repository contains both development and test databases to make use of. In order to access the correct database depending on whether you are currently testing or making use of the development database, you will need to set up 2 .env files.
 
 To do this, first make 2 files at the root of the repo called .env.test and .env.development.
 
-In .env.test, the following line must be added: PGDATABASE=nc_games_test
+In each file, add the line PGDATABASE=<database_name_here> with the correct database name for that environment.
 
-In .env.development, add the following line: PGDATABASE=nc_games
+Add these files to your .gitignore and your env variables should now be set.
 
-Your environment variables should now be created.
+## Minimum Requirements
 
-## GET /api/categories
-
-This endpoint will return an array of categories from the categories database.
-
-## GET /api/reviews/:review_id
-
-This endpoint will return a single review by specified id e.g. /api/reviews/1 will return the review with review_id 1. The response will include a count of comments for the specified review.
-
-Review Id must be entered as a digit/s.
-
-## GET /api/users
-
-This endpoint will return an array of users from the users table.
-
-## PATCH /api/reviews/:review_id
-
-This endpoint will allow you to increment or decrement a chosen reviews vote property.
-
-The request must be formatted as {inc_votes: <//digits to change the votes by>}.
-
-Extra changes requested will be ignored by this endpoint.
-
-## POST /api/reviews/:review_id/comments
-
-This endpoint accepts an object e.g. {username: <//existing_user>, body: "comment message"} and posts it to the comments table.
-
-## GET /api/reviews
-
-This endpoint will return an array of all reviews when no query is present.
-
-Queries:
-
-- category=<//name of category> - filters by category selected
-- sort_by=<//column name> - sorts by selected column
-- order=<//asc or desc> - orders reviews either ascending or descending.
-
-## GET /api/reviews/:review_id/commments
-
-This endpoint will return an array of all comments associated with a specified review.
-
-:review_id must be entered as a digit/digits.
-
-## DELETE /api/comments/:comment_id
-
-This endpoint will delete a comment by the selected id.
-
-:comment_id must be entered as a digit/digits.
+Node.js: 18.6.0
+Postgres: 14.5
