@@ -70,7 +70,7 @@
   "POST /api/reviews/:review_id/comments": {
     "description": "posts a new comment to the comments database returning the posted comment",
     "queries": [],
-    "requestFormat": {"username": "String", "body": "String"},
+    "requestFormat": { "username": "String", "body": "String" },
     "exampleResponse": {
       "comment": {
         "comment_id": 8,
@@ -82,7 +82,7 @@
   "PATCH /api/reviews/:review_id": {
     "description": "updates votes property of specified review by id",
     "queries": [],
-    "requestFormat": {"inc_votes": "Integer to increment/ decrement votes"},
+    "requestFormat": { "inc_votes": "Integer to increment/ decrement votes" },
     "exampleResponse": {
       "review": {
         "review_id": 1,
@@ -112,6 +112,6 @@
     }
   },
   "DELETE /api/comments/:comment_id": {
-    "description": "deletes selected comment returning no content",
+    "description": "deletes selected comment returning no content"
   }
 }
