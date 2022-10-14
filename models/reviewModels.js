@@ -35,7 +35,7 @@ exports.selectReviewCommentsById = (id) => {
     });
 };
 
-exports.selectReviews = (category, sort_by = "created_at", order = "DESC") => {
+exports.selectReviews = (category, sort_by = "created_at", order = "DESC", limit = 10) => {
   validSortQueries = [
     "review_id",
     "category",
@@ -68,7 +68,9 @@ exports.selectReviews = (category, sort_by = "created_at", order = "DESC") => {
 
   queryStr += " GROUP BY reviews.review_id";
 
-  queryStr += ` ORDER BY ${sort_by} ${order}`;
+  queryValues.push(limit);
+  queryStr += ` ORDER BY ${sort_by} ${order}
+                LIMIT $${queryValues.length}`;
 
   return db.query(queryStr, queryValues).then(({ rows: reviews }) => {
     return reviews;
