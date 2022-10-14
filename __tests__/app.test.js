@@ -34,25 +34,58 @@ describe("GET /api", () => {
   });
 });
 
-describe("GET /api/categories", () => {
-  describe("Happy Path", () => {
-    it("status: 200, responds with array of categories", () => {
-      return request(app)
-        .get("/api/categories")
-        .expect(200)
-        .then(({ body }) => {
-          expect(Array.isArray(body.categories)).toBe(true);
-          expect(body.categories.length).toBe(4);
-          body.categories.forEach((category) => {
-            expect(category).toEqual(
-              expect.objectContaining({
-                slug: expect.any(String),
-                description: expect.any(String),
-              })
-            );
+describe("Category endpoints", () => {
+  describe("GET /api/categories", () => {
+    describe("Happy Path", () => {
+      it("status: 200, responds with array of categories", () => {
+        return request(app)
+          .get("/api/categories")
+          .expect(200)
+          .then(({ body }) => {
+            expect(Array.isArray(body.categories)).toBe(true);
+            expect(body.categories.length).toBe(4);
+            body.categories.forEach((category) => {
+              expect(category).toEqual(
+                expect.objectContaining({
+                  slug: expect.any(String),
+                  description: expect.any(String),
+                })
+              );
+            });
           });
-        });
+      });
     });
+  });
+  describe("POST /api/categories", () => {
+    describe("Happy Path", () => {
+      it("status: 201, responds with newly added category", () => {
+        return request(app)
+          .post("/api/categories")
+          .send({
+            slug: "deck-builder",
+            description:
+              "constructing a card deck to compete against other players",
+          })
+          .expect(201)
+          .then(({ body }) => {
+            expect(body.category).toEqual({
+              slug: "deck-builder",
+              description:
+                "constructing a card deck to compete against other players",
+            });
+          });
+      });
+    });
+    describe("Error Handling", () => {
+      it("status: 400, request body missing required fields", () => {
+        return request(app)
+          .post("/api/categories")
+          .expect(400)
+          .then(({ body }) => {
+            expect(body.msg).toBe("Required field/s missing");
+          });
+      });
+    })
   });
 });
 
