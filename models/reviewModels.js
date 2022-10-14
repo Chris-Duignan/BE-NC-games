@@ -21,15 +21,14 @@ exports.selectReviewById = (id) => {
     });
 };
 
-exports.selectReviewCommentsById = (id) => {
+exports.selectReviewCommentsById = (id, limit = 10, p = 1) => {
+  const queryStr = `SELECT * FROM comments
+                    WHERE review_id = $1
+                    ORDER BY created_at DESC
+                    LIMIT $2 OFFSET $3`;
+
   return db
-    .query(
-      `SELECT *
-      FROM comments
-      WHERE review_id = $1
-      ORDER BY created_at DESC`,
-      [id]
-    )
+    .query(queryStr, [id, limit, p * limit - limit])
     .then(({ rows: comments }) => {
       return comments;
     });
@@ -58,7 +57,7 @@ exports.selectReviews = (
     return Promise.reject({ status: 400, msg: "Invalid sort query" });
   } else if (!validOrderQueries.includes(order)) {
     return Promise.reject({ status: 400, msg: "Invalid order query" });
-  } 
+  }
 
   let queryStr = `SELECT reviews.*, COUNT(comments.comment_id) ::INT AS comment_count, count(reviews.*) OVER () :: INT AS total_count
                     FROM reviews
@@ -78,9 +77,8 @@ exports.selectReviews = (
   queryStr += ` ORDER BY ${sort_by} ${order}
                 LIMIT $${queryValues.length}`;
 
-
   queryValues.push(p * limit - limit);
-  queryStr += ` OFFSET $${queryValues.length}`
+  queryStr += ` OFFSET $${queryValues.length}`;
 
   return db.query(queryStr, queryValues).then(({ rows: reviews }) => {
     return reviews;

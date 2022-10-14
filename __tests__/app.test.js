@@ -359,6 +359,43 @@ describe("Review endpoints", () => {
           });
       });
     });
+    describe("Queries", () => {
+      it("should accept a limit query which limits the number of responses", () => {
+        return request(app)
+          .get("/api/reviews/2/comments?limit=1")
+          .expect(200)
+          .then(({ body }) => {
+            const { comments } = body;
+            expect(Array.isArray(comments)).toBe(true);
+            expect(comments.length).toBe(1);
+          });
+      });
+      it("should default to limit of 10 if not supplied", () => {
+        return request(app)
+          .get("/api/reviews/2/comments?limit=3")
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.comments.length).toBe(3);
+          });
+      });
+      it("should accept a p query which specifies which page to start at", () => {
+        return request(app)
+          .get("/api/reviews/2/comments?p=2")
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.comments.length).toBe(0);
+          });
+      });
+      it("should default to first page when p not specified", () => {
+        return request(app)
+          .get("/api/reviews/2/comments")
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.comments.length).toBe(3);
+          });
+      });
+    });
+
     describe("Error Handling", () => {
       it("status 404: return error when review id does not exist", () => {
         return request(app)
@@ -383,6 +420,38 @@ describe("Review endpoints", () => {
           .then(({ body }) => {
             expect(Array.isArray(body.comments)).toBe(true);
             expect(body.comments.length).toBe(0);
+          });
+      });
+      it("status 400: rejects limit in wrong datatype", () => {
+        return request(app)
+          .get("/api/reviews?limit=break")
+          .expect(400)
+          .then(({ body }) => {
+            expect(body.msg).toBe("Unexpected field type");
+          });
+      });
+      it("status 400: rejects negative limit query", () => {
+        return request(app)
+          .get("/api/reviews?limit=-5")
+          .expect(400)
+          .then(({ body }) => {
+            expect(body.msg).toBe("Limit must not be negative");
+          });
+      });
+      it("status 400: rejects p in wrong datatype", () => {
+        return request(app)
+          .get("/api/reviews?p=break")
+          .expect(400)
+          .then(({ body }) => {
+            expect(body.msg).toBe("Unexpected field type");
+          });
+      });
+      it("status 400: rejects negative p query", () => {
+        return request(app)
+          .get("/api/reviews?p=-4")
+          .expect(400)
+          .then(({ body }) => {
+            expect(body.msg).toBe("Offset must not be negative");
           });
       });
     });
