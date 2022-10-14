@@ -60,7 +60,7 @@ exports.selectReviews = (
     return Promise.reject({ status: 400, msg: "Invalid order query" });
   } 
 
-  let queryStr = `SELECT reviews.*, COUNT(comments.comment_id) ::INT AS comment_count
+  let queryStr = `SELECT reviews.*, COUNT(comments.comment_id) ::INT AS comment_count, count(reviews.*) OVER () :: INT AS total_count
                     FROM reviews
                     LEFT JOIN comments
                     on reviews.review_id = comments.review_id`;

@@ -163,6 +163,23 @@ describe("Review endpoints", () => {
             });
           });
       });
+      it("should contain a total_count property displayin the total number of articles", () => {
+        return request(app)
+          .get("/api/reviews")
+          .expect(200)
+          .then(({ body }) => {
+            const { reviews } = body;
+            expect(Array.isArray(reviews)).toBe(true);
+            expect(reviews.length).toBe(10);
+            reviews.forEach((review) => {
+              expect(review).toEqual(
+                expect.objectContaining({
+                  total_count: 13,
+                })
+              );
+            });
+          });
+      });
       describe("Queries", () => {
         it("should accept a category query which filters the reviews by the selected category", () => {
           return request(app)
@@ -224,19 +241,18 @@ describe("Review endpoints", () => {
           return request(app)
             .get("/api/reviews?p=2")
             .expect(200)
-            .then(({body}) => {
+            .then(({ body }) => {
               expect(body.reviews.length).toBe(3);
-            })
-        })
+            });
+        });
         it("should default to first page when p not specified", () => {
           return request(app)
             .get("/api/reviews")
             .expect(200)
-            .then(({body}) => {
+            .then(({ body }) => {
               expect(body.reviews.length).toBe(10);
-            })
-        })
-        it("")
+            });
+        });
       });
     });
     describe("Error Handling", () => {
