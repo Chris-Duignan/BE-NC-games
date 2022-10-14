@@ -39,7 +39,8 @@ exports.selectReviews = (
   category,
   sort_by = "created_at",
   order = "DESC",
-  limit = 10
+  limit = 10,
+  p = 1
 ) => {
   validSortQueries = [
     "review_id",
@@ -57,7 +58,7 @@ exports.selectReviews = (
     return Promise.reject({ status: 400, msg: "Invalid sort query" });
   } else if (!validOrderQueries.includes(order)) {
     return Promise.reject({ status: 400, msg: "Invalid order query" });
-  }
+  } 
 
   let queryStr = `SELECT reviews.*, COUNT(comments.comment_id) ::INT AS comment_count
                     FROM reviews
@@ -76,6 +77,10 @@ exports.selectReviews = (
   queryValues.push(limit);
   queryStr += ` ORDER BY ${sort_by} ${order}
                 LIMIT $${queryValues.length}`;
+
+
+  queryValues.push(p * limit - limit);
+  queryStr += ` OFFSET $${queryValues.length}`
 
   return db.query(queryStr, queryValues).then(({ rows: reviews }) => {
     return reviews;

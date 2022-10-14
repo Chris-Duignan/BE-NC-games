@@ -7,7 +7,9 @@ exports.handleCustomErrors = (err, req, res, next) => {
 };
 
 exports.handlePSQLErrors = (err, req, res, next) => {
-  if (err.code === "2201W") {
+  if (err.code === "2201X") {
+    res.status(400).send({ msg: "Offset must not be negative" });
+  } else if (err.code === "2201W") {
     res.status(400).send({ msg: "Limit must not be negative" });
   } else if (err.code === "23502") {
     res.status(400).send({ msg: "Required field/s missing" });
