@@ -36,13 +36,22 @@ exports.selectReviewCommentsById = (id) => {
 };
 
 exports.selectReviews = (category, sort_by = "created_at", order = "DESC") => {
-  validSortQueries = ["review_id", "category", "designer", "owner", "review_body", "review_img_url", "created_at", "votes"];
+  validSortQueries = [
+    "review_id",
+    "category",
+    "designer",
+    "owner",
+    "review_body",
+    "review_img_url",
+    "created_at",
+    "votes",
+  ];
   validOrderQueries = ["ASC", "DESC", "asc", "desc"];
 
-  if(!validSortQueries.includes(sort_by)) {
-    return Promise.reject({status: 400, msg: "Invalid sort query"});
-  } else if(!validOrderQueries.includes(order)) {
-    return Promise.reject({status: 400, msg: "Invalid order query"})
+  if (!validSortQueries.includes(sort_by)) {
+    return Promise.reject({ status: 400, msg: "Invalid sort query" });
+  } else if (!validOrderQueries.includes(order)) {
+    return Promise.reject({ status: 400, msg: "Invalid order query" });
   }
 
   let queryStr = `SELECT reviews.*, COUNT(comments.comment_id) ::INT AS comment_count
@@ -59,11 +68,32 @@ exports.selectReviews = (category, sort_by = "created_at", order = "DESC") => {
 
   queryStr += " GROUP BY reviews.review_id";
 
-  queryStr += ` ORDER BY ${sort_by} ${order}`
+  queryStr += ` ORDER BY ${sort_by} ${order}`;
 
   return db.query(queryStr, queryValues).then(({ rows: reviews }) => {
     return reviews;
   });
+};
+
+exports.insertReview = (request) => {
+  const { owner, title, review_body, designer, category } = request;
+
+  return db
+    .query(
+      `INSERT INTO reviews
+        (owner, title, review_body, designer, category)
+       VALUES
+        ($1, $2, $3, $4, $5)
+        RETURNING review_id;`,
+      [owner, title, review_body, designer, category]
+    )
+    .then(({ rows: [review] }) => {
+      const {review_id} = review;
+      return this.selectReviewById(review_id);
+    }).then((review) => {
+      delete review.review_img_url;
+      return review;
+    });
 };
 
 exports.insertCommentByReviewId = (id, comment) => {
