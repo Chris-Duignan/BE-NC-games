@@ -313,12 +313,17 @@ describe("Review endpoints", () => {
           .send({
             owner: "dav3rid",
             title: "Wingspan",
-            review_body: "Hatch "
-          })
-      })
-    })
-  })
-
+            review_body: "Hatch birds, get points",
+            designer: "Elizabeth Hargrave",
+            category: "euro game",
+            review_id: 12,
+            votes: 0,
+            created_at: expect.any(String),
+            comment_count: 0,
+          });
+      });
+    });
+  });
 
   describe("POST /api/reviews/:review_id/comments", () => {
     describe("Happy Path", () => {
