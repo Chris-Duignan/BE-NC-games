@@ -220,6 +220,23 @@ describe("Review endpoints", () => {
               expect(body.reviews.length).toBe(10);
             });
         });
+        it("should accept a p query which specifies which page to start at", () => {
+          return request(app)
+            .get("/api/reviews?p=2")
+            .expect(200)
+            .then(({body}) => {
+              expect(body.reviews.length).toBe(3);
+            })
+        })
+        it("should default to first page when p not specified", () => {
+          return request(app)
+            .get("/api/reviews")
+            .expect(200)
+            .then(({body}) => {
+              expect(body.reviews.length).toBe(10);
+            })
+        })
+        it("")
       });
     });
     describe("Error Handling", () => {
@@ -270,6 +287,22 @@ describe("Review endpoints", () => {
           .expect(400)
           .then(({ body }) => {
             expect(body.msg).toBe("Limit must not be negative");
+          });
+      });
+      it("status 400: rejects p in wrong datatype", () => {
+        return request(app)
+          .get("/api/reviews?p=break")
+          .expect(400)
+          .then(({ body }) => {
+            expect(body.msg).toBe("Unexpected field type");
+          });
+      });
+      it("status 400: rejects negative p query", () => {
+        return request(app)
+          .get("/api/reviews?p=-4")
+          .expect(400)
+          .then(({ body }) => {
+            expect(body.msg).toBe("Offset must not be negative");
           });
       });
     });
