@@ -20,10 +20,12 @@ exports.getReviewById = (req, res, next) => {
 
 exports.getReviewCommentsById = (req, res, next) => {
   const { review_id } = req.params;
+  const { limit } = req.query;
+  const { p } = req.query;
 
   const promises = [
     selectReviewById(review_id),
-    selectReviewCommentsById(review_id),
+    selectReviewCommentsById(review_id, limit, p),
   ];
 
   Promise.all(promises)
@@ -38,7 +40,7 @@ exports.getReviews = (req, res, next) => {
   const { sort_by } = req.query;
   const { order } = req.query;
   const { limit } = req.query;
-  const {p} = req.query;
+  const { p } = req.query;
 
   const promises = [selectReviews(category, sort_by, order, limit, p)];
 
