@@ -100,7 +100,7 @@ exports.insertCommentByReviewId = (id, comment) => {
   const { username, body } = comment;
 
   if (!username || !body) {
-    return Promise.reject({ status: 400, msg: "Required fields missing" });
+    return Promise.reject({ status: 400, msg: "Required field/s missing" });
   } else if (typeof username !== "string" || typeof body !== "string") {
     return Promise.reject({ status: 400, msg: "Unexpected field type" });
   } else {
