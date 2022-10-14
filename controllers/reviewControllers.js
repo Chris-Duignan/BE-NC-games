@@ -37,8 +37,10 @@ exports.getReviews = (req, res, next) => {
   const { category } = req.query;
   const { sort_by } = req.query;
   const { order } = req.query;
+  const { limit } = req.query;
+  const {p} = req.query;
 
-  const promises = [selectReviews(category, sort_by, order)];
+  const promises = [selectReviews(category, sort_by, order, limit, p)];
 
   if (category) {
     promises.push(selectCategoryBySlug(category));

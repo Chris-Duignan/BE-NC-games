@@ -126,7 +126,7 @@ describe("Review endpoints", () => {
           .then(({ body }) => {
             const { reviews } = body;
             expect(Array.isArray(reviews)).toBe(true);
-            expect(reviews.length).toBe(13);
+            expect(reviews.length).toBe(10);
             reviews.forEach((review) => {
               expect(review).toEqual(
                 expect.objectContaining({
@@ -163,13 +163,30 @@ describe("Review endpoints", () => {
             });
           });
       });
+      it("should contain a total_count property displayin the total number of articles", () => {
+        return request(app)
+          .get("/api/reviews")
+          .expect(200)
+          .then(({ body }) => {
+            const { reviews } = body;
+            expect(Array.isArray(reviews)).toBe(true);
+            expect(reviews.length).toBe(10);
+            reviews.forEach((review) => {
+              expect(review).toEqual(
+                expect.objectContaining({
+                  total_count: 13,
+                })
+              );
+            });
+          });
+      });
       describe("Queries", () => {
         it("should accept a category query which filters the reviews by the selected category", () => {
           return request(app)
             .get("/api/reviews?category=social_deduction")
             .expect(200)
             .then(({ body }) => {
-              expect(body.reviews.length).toBe(11);
+              expect(body.reviews.length).toBe(10);
               body.reviews.forEach((review) => {
                 expect(review.category).toBe("social deduction");
               });
@@ -200,6 +217,40 @@ describe("Review endpoints", () => {
             .then(({ body }) => {
               const { reviews } = body;
               expect(reviews).toBeSortedBy("created_at", { descending: false });
+            });
+        });
+        it("should accept a limit query which limits the number of responses", () => {
+          return request(app)
+            .get("/api/reviews?limit=5")
+            .expect(200)
+            .then(({ body }) => {
+              const { reviews } = body;
+              expect(Array.isArray(reviews)).toBe(true);
+              expect(reviews.length).toBe(5);
+            });
+        });
+        it("should default to limit of 10 if not supplied", () => {
+          return request(app)
+            .get("/api/reviews")
+            .expect(200)
+            .then(({ body }) => {
+              expect(body.reviews.length).toBe(10);
+            });
+        });
+        it("should accept a p query which specifies which page to start at", () => {
+          return request(app)
+            .get("/api/reviews?p=2")
+            .expect(200)
+            .then(({ body }) => {
+              expect(body.reviews.length).toBe(3);
+            });
+        });
+        it("should default to first page when p not specified", () => {
+          return request(app)
+            .get("/api/reviews")
+            .expect(200)
+            .then(({ body }) => {
+              expect(body.reviews.length).toBe(10);
             });
         });
       });
@@ -236,6 +287,38 @@ describe("Review endpoints", () => {
           .expect(400)
           .then(({ body }) => {
             expect(body.msg).toBe("Invalid order query");
+          });
+      });
+      it("status 400: rejects limit in wrong datatype", () => {
+        return request(app)
+          .get("/api/reviews?limit=break")
+          .expect(400)
+          .then(({ body }) => {
+            expect(body.msg).toBe("Unexpected field type");
+          });
+      });
+      it("status 400: rejects negative limit query", () => {
+        return request(app)
+          .get("/api/reviews?limit=-5")
+          .expect(400)
+          .then(({ body }) => {
+            expect(body.msg).toBe("Limit must not be negative");
+          });
+      });
+      it("status 400: rejects p in wrong datatype", () => {
+        return request(app)
+          .get("/api/reviews?p=break")
+          .expect(400)
+          .then(({ body }) => {
+            expect(body.msg).toBe("Unexpected field type");
+          });
+      });
+      it("status 400: rejects negative p query", () => {
+        return request(app)
+          .get("/api/reviews?p=-4")
+          .expect(400)
+          .then(({ body }) => {
+            expect(body.msg).toBe("Offset must not be negative");
           });
       });
     });
@@ -337,7 +420,7 @@ describe("Review endpoints", () => {
       it("status: 400, request body missing required fields", () => {
         return request(app)
           .post("/api/reviews")
-          .send({owner: "dav3rid", category: "euro game"})
+          .send({ owner: "dav3rid", category: "euro game" })
           .expect(400)
           .then(({ body }) => {
             expect(body.msg).toBe("Required field/s missing");
@@ -354,22 +437,22 @@ describe("Review endpoints", () => {
             category: "euro game",
           })
           .expect(404)
-          .then(({body}) => {
-            expect(body.msg).toBe(`User thadenox not found`)
-          })
+          .then(({ body }) => {
+            expect(body.msg).toBe(`User thadenox not found`);
+          });
       });
       it("status: 404, category does not exist", () => {
         return request(app)
           .post("/api/reviews")
           .send({
             owner: "dav3rid",
-            category: "deck builder"
+            category: "deck builder",
           })
           .expect(404)
-          .then(({body})=> {
-            expect(body.msg).toBe("Category not found")
-          })
-      })
+          .then(({ body }) => {
+            expect(body.msg).toBe("Category not found");
+          });
+      });
     });
   });
 
