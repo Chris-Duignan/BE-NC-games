@@ -67,6 +67,30 @@
       ]
     }
   },
+  "POST /api/reviews": {
+    "description": "posts new review to review table",
+    "queries": [],
+    "requestFormat": {
+      "owner": "username",
+      "title": "One Night Ultimate Werewolf",
+      "review_body": "We couldn't find the werewolf",
+      "designer": "Akihisa Okui",
+      "category": "hidden-roles"
+    },
+    "exampleResponse": {
+      "review": {
+        "owner": "username",
+        "title": "One Night Ultimate Werewolf",
+        "review_body": "We couldn't find the werewolf",
+        "designer": "Akihisa Okui",
+        "category": "hidden-roles",
+        "review_id": 2,
+        "votes": 0,
+        "created_at": 1511354613389,
+        "comment_count" : 0
+      }
+    }
+  },
   "POST /api/reviews/:review_id/comments": {
     "description": "posts a new comment to the comments database returning the posted comment",
     "queries": [],

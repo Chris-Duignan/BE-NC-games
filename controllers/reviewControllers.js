@@ -62,7 +62,7 @@ exports.postReview = (req, res, next) => {
 
   Promise.all(promises)
     .then((promises) => {
-      res.status(201).send({ review: promises[1] });
+      res.status(201).send({ review: promises[2] });
     })
     .catch(next);
 };

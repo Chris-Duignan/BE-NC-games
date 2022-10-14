@@ -28,7 +28,7 @@ describe("GET /api", () => {
         .then(({ body }) => {
           expect(body).toBeObject();
           expect(body.endpoints).toBeObject();
-          expect(Object.keys(body.endpoints).length).toBe(11);
+          expect(Object.keys(body.endpoints).length).toBe(12);
         });
     });
   });
@@ -333,7 +333,7 @@ describe("Review endpoints", () => {
           });
       });
     });
-    describe.only("Error Handling", () => {
+    describe("Error Handling", () => {
       it("status: 400, request body missing required fields", () => {
         return request(app)
           .post("/api/reviews")
