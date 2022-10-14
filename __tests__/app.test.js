@@ -333,6 +333,44 @@ describe("Review endpoints", () => {
           });
       });
     });
+    describe.only("Error Handling", () => {
+      it("status: 400, request body missing required fields", () => {
+        return request(app)
+          .post("/api/reviews")
+          .send({owner: "dav3rid", category: "euro game"})
+          .expect(400)
+          .then(({ body }) => {
+            expect(body.msg).toBe("Required field/s missing");
+          });
+      });
+      it("status: 404, username does not exist", () => {
+        return request(app)
+          .post("/api/reviews")
+          .send({
+            owner: "thadenox",
+            title: "Wingspan",
+            review_body: "Hatch birds, get points",
+            designer: "Elizabeth Hargrave",
+            category: "euro game",
+          })
+          .expect(404)
+          .then(({body}) => {
+            expect(body.msg).toBe(`User thadenox not found`)
+          })
+      });
+      it("status: 404, category does not exist", () => {
+        return request(app)
+          .post("/api/reviews")
+          .send({
+            owner: "dav3rid",
+            category: "deck builder"
+          })
+          .expect(404)
+          .then(({body})=> {
+            expect(body.msg).toBe("Category not found")
+          })
+      })
+    });
   });
 
   describe("POST /api/reviews/:review_id/comments", () => {
@@ -380,7 +418,7 @@ describe("Review endpoints", () => {
           .send({})
           .expect(400)
           .then(({ body }) => {
-            expect(body.msg).toBe("Required fields missing");
+            expect(body.msg).toBe("Required field/s missing");
           });
       });
       it("status: 400, responds with error when request fields in incorrect datatype", () => {
@@ -620,7 +658,7 @@ describe("Comments endpoints", () => {
           .patch("/api/comments/1")
           .expect(400)
           .then(({ body }) => {
-            expect(body.msg).toBe("Please enter inc_votes field");
+            expect(body.msg).toBe("Required field/s missing");
           });
       });
       it("status: 400, inc_votes field entered in incorrect format", () => {
