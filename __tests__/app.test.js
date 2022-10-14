@@ -28,7 +28,7 @@ describe("GET /api", () => {
         .then(({ body }) => {
           expect(body).toBeObject();
           expect(body.endpoints).toBeObject();
-          expect(Object.keys(body.endpoints).length).toBe(9);
+          expect(Object.keys(body.endpoints).length).toBe(10);
         });
     });
   });
@@ -545,7 +545,76 @@ describe("Comments endpoints", () => {
               votes: 17,
               author: "bainesface",
               review_id: 2,
-              created_at: new Date(1511354613389),
+              created_at: "2017-11-22T12:43:33.389Z",
+            });
+          });
+      });
+      it("status 200, returns updated comment when decremented", () => {
+        return request(app)
+          .patch("/api/comments/1")
+          .send({ inc_votes: -1 })
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.comment).toEqual({
+              comment_id: 1,
+              body: "I loved this game too!",
+              votes: 15,
+              author: "bainesface",
+              review_id: 2,
+              created_at: "2017-11-22T12:43:33.389Z",
+            });
+          });
+      });
+    });
+    describe("Error Handling", () => {
+      it("status 404: comment id does not exist", () => {
+        return request(app)
+          .patch("/api/comments/9999")
+          .send({ inc_votes: 1 })
+          .expect(404)
+          .then(({ body }) => {
+            expect(body.msg).toBe("Id 9999 not found");
+          });
+      });
+      it("status 400, id entered in wrong datatype", () => {
+        return request(app)
+          .patch("/api/comments/notAnId")
+          .send({ inc_votes: 1 })
+          .expect(400)
+          .then(({ body }) => {
+            expect(body.msg).toBe("Unexpected field type");
+          });
+      });
+      it("status: 400, inc_votes field missing from request body", () => {
+        return request(app)
+          .patch("/api/comments/1")
+          .expect(400)
+          .then(({ body }) => {
+            expect(body.msg).toBe("Please enter inc_votes field");
+          });
+      });
+      it("status: 400, inc_votes field entered in incorrect format", () => {
+        return request(app)
+          .patch("/api/comments/1")
+          .send({ inc_votes: "hello" })
+          .expect(400)
+          .then(({ body }) => {
+            expect(body.msg).toBe("Unexpected field type");
+          });
+      });
+      it("should ignore extra requests to be added", () => {
+        return request(app)
+          .patch("/api/comments/1")
+          .send({ inc_votes: 1, body: "Hello" })
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.comment).toEqual({
+              comment_id: 1,
+              body: "I loved this game too!",
+              votes: 17,
+              author: "bainesface",
+              review_id: 2,
+              created_at: "2017-11-22T12:43:33.389Z",
             });
           });
       });
