@@ -216,10 +216,10 @@ describe("Review endpoints", () => {
           return request(app)
             .get("/api/reviews")
             .expect(200)
-            .then(({body}) => {
+            .then(({ body }) => {
               expect(body.reviews.length).toBe(10);
-            })
-        })
+            });
+        });
       });
     });
     describe("Error Handling", () => {
@@ -254,6 +254,22 @@ describe("Review endpoints", () => {
           .expect(400)
           .then(({ body }) => {
             expect(body.msg).toBe("Invalid order query");
+          });
+      });
+      it("status 400: rejects limit in wrong datatype", () => {
+        return request(app)
+          .get("/api/reviews?limit=break")
+          .expect(400)
+          .then(({ body }) => {
+            expect(body.msg).toBe("Unexpected field type");
+          });
+      });
+      it("status 400: rejects negative limit query", () => {
+        return request(app)
+          .get("/api/reviews?limit=-5")
+          .expect(400)
+          .then(({ body }) => {
+            expect(body.msg).toBe("Limit must not be negative");
           });
       });
     });
