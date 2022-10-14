@@ -316,10 +316,20 @@ describe("Review endpoints", () => {
             review_body: "Hatch birds, get points",
             designer: "Elizabeth Hargrave",
             category: "euro game",
-            review_id: 12,
-            votes: 0,
-            created_at: expect.any(String),
-            comment_count: 0,
+          })
+          .expect(201)
+          .then(({ body }) => {
+            expect(body.review).toEqual({
+              owner: "dav3rid",
+              title: "Wingspan",
+              review_body: "Hatch birds, get points",
+              designer: "Elizabeth Hargrave",
+              category: "euro game",
+              review_id: 14,
+              votes: 0,
+              created_at: expect.any(String),
+              comment_count: 0,
+            });
           });
       });
     });
