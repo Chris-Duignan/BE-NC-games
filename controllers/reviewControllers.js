@@ -2,6 +2,7 @@ const {
   selectReviewById,
   selectReviews,
   selectReviewCommentsById,
+  insertReview,
   insertCommentByReviewId,
   updateReviewVotesById,
 } = require("../models/reviewModels");
@@ -50,10 +51,26 @@ exports.getReviews = (req, res, next) => {
     .catch(next);
 };
 
+exports.postReview = (req, res, next) => {
+  const request = req.body;
+
+  const promises = [
+    selectUserByUsername(request.owner),
+    selectCategoryBySlug(request.category),
+    insertReview(request),
+  ];
+
+  Promise.all(promises)
+    .then((promises) => {
+      res.status(201).send({ review: promises[2] });
+    })
+    .catch(next);
+};
+
 exports.postCommentByReviewId = (req, res, next) => {
   const { review_id } = req.params;
   const request = req.body;
-  const {username} = request;
+  const { username } = request;
 
   const promises = [
     selectReviewById(review_id),
