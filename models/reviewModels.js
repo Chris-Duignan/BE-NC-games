@@ -153,3 +153,20 @@ exports.updateReviewVotesById = (id, update) => {
       }
     });
 };
+
+exports.removeReviewById = (id) => {
+  return db.query(
+    `DELETE FROM comments
+     WHERE review_id = $1`, [id]
+  ).then(() => {
+    return db.query(
+      `DELETE FROM reviews
+       WHERE review_id = $1`, [id]
+    ).then(({rowCount}) => {
+
+      if (rowCount === 0) {
+        return Promise.reject({status: 404, msg: `Id ${id} not found`})
+      }
+    })
+  })
+}

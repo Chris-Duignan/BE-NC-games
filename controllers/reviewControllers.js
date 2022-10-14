@@ -5,6 +5,7 @@ const {
   insertReview,
   insertCommentByReviewId,
   updateReviewVotesById,
+  removeReviewById
 } = require("../models/reviewModels");
 const { selectCategoryBySlug } = require("../models/categoryModels");
 const { selectUserByUsername } = require("../models/usersModels");
@@ -98,3 +99,10 @@ exports.patchReviewVotesById = (req, res, next) => {
     })
     .catch(next);
 };
+
+exports.deleteReviewById = (req, res, next) => {
+ const { review_id } = req.params;
+ removeReviewById(review_id).then(() => {
+  res.status(204).end();
+ }).catch(next);
+}

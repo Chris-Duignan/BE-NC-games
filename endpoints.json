@@ -136,6 +136,9 @@
       }
     }
   },
+  "DELETE /api/reviews/:review_id": {
+    "description": "deletes a specified review and all associated comments"
+  },
   "GET /api/users": {
     "description": "serves an array of all users",
     "queries": [],

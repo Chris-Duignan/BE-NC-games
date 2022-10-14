@@ -5,6 +5,7 @@ const {
     postReview,
     postCommentByReviewId,
     patchReviewVotesById,
+    deleteReviewById
   } = require("../controllers/reviewControllers");
 
 const reviewRouter = require("express").Router();
@@ -17,7 +18,8 @@ reviewRouter
 reviewRouter
   .route("/:review_id")
   .get(getReviewById)
-  .patch(patchReviewVotesById);
+  .patch(patchReviewVotesById)
+  .delete(deleteReviewById);
 
 reviewRouter
   .route("/:review_id/comments")

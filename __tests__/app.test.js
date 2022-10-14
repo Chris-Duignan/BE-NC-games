@@ -28,7 +28,7 @@ describe("GET /api", () => {
         .then(({ body }) => {
           expect(body).toBeObject();
           expect(body.endpoints).toBeObject();
-          expect(Object.keys(body.endpoints).length).toBe(12);
+          expect(Object.keys(body.endpoints).length).toBe(14);
         });
     });
   });
@@ -85,7 +85,7 @@ describe("Category endpoints", () => {
             expect(body.msg).toBe("Required field/s missing");
           });
       });
-    })
+    });
   });
 });
 
@@ -354,6 +354,31 @@ describe("Review endpoints", () => {
             expect(body.msg).toBe("Offset must not be negative");
           });
       });
+    });
+    describe("DELETE /api/reviews/:review_id", () => {
+      describe("Happy Path", () => {
+        it("status 204, responds with nothing", () => {
+          return request(app).delete("/api/reviews/2").expect(204);
+        });
+      });
+      describe("Error Handling", () => {
+        it("status: 404, id entered correctly but does not exist", () => {
+          return request(app)
+            .delete("/api/reviews/9999")
+            .expect(404)
+            .then(({ body }) => {
+              expect(body.msg).toBe("Id 9999 not found");
+            });
+        });
+        it("status : 400, id entered in incorrect format", () => {
+          return request(app)
+            .delete("/api/reviews/notAnId")
+            .expect(400)
+            .then(({ body }) => {
+              expect(body.msg).toBe("Unexpected field type");
+            });
+        });
+      })
     });
   });
 
