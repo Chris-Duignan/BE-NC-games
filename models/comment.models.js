@@ -10,6 +10,9 @@ exports.updateCommentVotesById = (id, update) => {
              WHERE comment_id = $2
              RETURNING *`, [inc_votes, id]
         ).then(({rows: [comment]}) => {
+            if (comment === undefined) {
+                return Promise.reject({status: 404, msg: `Id ${id} not found`})
+            }
             return comment;
         })
 }
