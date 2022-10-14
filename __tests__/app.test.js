@@ -28,7 +28,7 @@ describe("GET /api", () => {
         .then(({ body }) => {
           expect(body).toBeObject();
           expect(body.endpoints).toBeObject();
-          expect(Object.keys(body.endpoints).length).toBe(10);
+          expect(Object.keys(body.endpoints).length).toBe(11);
         });
     });
   });
@@ -304,6 +304,21 @@ describe("Review endpoints", () => {
       });
     });
   });
+
+  describe("POST /api/reviews", () => {
+    describe("Happy Path", () => {
+      it("status 201: responds with newly added review", () => {
+        return request(app)
+          .post("/api/reviews")
+          .send({
+            owner: "dav3rid",
+            title: "Wingspan",
+            review_body: "Hatch "
+          })
+      })
+    })
+  })
+
 
   describe("POST /api/reviews/:review_id/comments", () => {
     describe("Happy Path", () => {

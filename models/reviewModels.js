@@ -48,7 +48,7 @@ exports.selectReviews = (category, sort_by = "created_at", order = "DESC") => {
   let queryStr = `SELECT reviews.*, COUNT(comments.comment_id) ::INT AS comment_count
                     FROM reviews
                     LEFT JOIN comments
-                    on reviews.review_id = comments.comment_id`;
+                    on reviews.review_id = comments.review_id`;
   const queryValues = [];
 
   if (category !== undefined) {
