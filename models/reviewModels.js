@@ -35,7 +35,12 @@ exports.selectReviewCommentsById = (id) => {
     });
 };
 
-exports.selectReviews = (category, sort_by = "created_at", order = "DESC", limit = 10) => {
+exports.selectReviews = (
+  category,
+  sort_by = "created_at",
+  order = "DESC",
+  limit = 10
+) => {
   validSortQueries = [
     "review_id",
     "category",
@@ -90,9 +95,10 @@ exports.insertReview = (request) => {
       [owner, title, review_body, designer, category]
     )
     .then(({ rows: [review] }) => {
-      const {review_id} = review;
+      const { review_id } = review;
       return this.selectReviewById(review_id);
-    }).then((review) => {
+    })
+    .then((review) => {
       delete review.review_img_url;
       return review;
     });
