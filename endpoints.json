@@ -53,7 +53,7 @@
   },
   "GET/api/reviews/:review_id/comments": {
     "description": "serves an array of comments associated with specified review id",
-    "queries": [],
+    "queries": ["limit", "p"],
     "exampleResponse": {
       "comments": [
         {
@@ -87,7 +87,7 @@
         "review_id": 2,
         "votes": 0,
         "created_at": 1511354613389,
-        "comment_count" : 0
+        "comment_count": 0
       }
     }
   },
