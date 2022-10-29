@@ -204,13 +204,7 @@ describe("Review endpoints", () => {
             const { reviews } = body;
             expect(Array.isArray(reviews)).toBe(true);
             expect(reviews.length).toBe(10);
-            reviews.forEach((review) => {
-              expect(review).toEqual(
-                expect.objectContaining({
-                  total_count: 13,
-                })
-              );
-            });
+            expect(body.total_count).toBe(13)
           });
       });
       describe("Queries", () => {

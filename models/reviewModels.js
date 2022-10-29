@@ -59,14 +59,22 @@ exports.selectReviews = (
     return Promise.reject({ status: 400, msg: "Invalid order query" });
   }
 
-  let queryStr = `SELECT reviews.*, COUNT(comments.comment_id) ::INT AS comment_count, count(reviews.*) OVER () :: INT AS total_count
+  let countStr = `SELECT COUNT(*)::INT FROM reviews`
+  const countValues=[];
+
+  if (category !== undefined) {
+    category = category.replace("_", " ")
+    countValues.push(category);
+    countStr += ` WHERE category = $1`
+  }
+
+  let queryStr = `SELECT reviews.*, COUNT(comments.comment_id) ::INT AS comment_count
                     FROM reviews
                     LEFT JOIN comments
                     on reviews.review_id = comments.review_id`;
   const queryValues = [];
 
   if (category !== undefined) {
-    category = category.replace("_", " ");
     queryValues.push(category);
     queryStr += ` WHERE category = $1`;
   }
@@ -80,8 +88,11 @@ exports.selectReviews = (
   queryValues.push(p * limit - limit);
   queryStr += ` OFFSET $${queryValues.length}`;
 
-  return db.query(queryStr, queryValues).then(({ rows: reviews }) => {
-    return reviews;
+  return Promise.all([db.query(queryStr, queryValues), db.query(countStr,countValues)]).then((promises) => {
+    const returnObj = {};
+    returnObj.total_count = promises[1].rows[0].count;
+    returnObj.reviews = promises[0].rows;
+    return returnObj;
   });
 };
 

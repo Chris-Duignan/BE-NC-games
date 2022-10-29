@@ -51,7 +51,7 @@ exports.getReviews = (req, res, next) => {
 
   Promise.all(promises)
     .then((promises) => {
-      res.status(200).send({ reviews: promises[0] });
+      res.status(200).send(promises[0]);
     })
     .catch(next);
 };
