@@ -5,6 +5,9 @@ const {
   handlePSQLErrors,
   handleInternalError,
 } = require("./error_handling");
+const cors = require('cors');
+
+app.use(cors());
 
 const app = express();
 app.use(express.json());
