@@ -50,6 +50,7 @@ exports.selectReviews = (
     "review_img_url",
     "created_at",
     "votes",
+    "comment_count"
   ];
   validOrderQueries = ["ASC", "DESC", "asc", "desc"];
 
