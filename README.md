@@ -2,7 +2,7 @@
 
 ## Hosted Version
 
-Please visit the hosted app at https://board-games-galore.herokuapp.com/api. This takes you to a dictionary of available endpoints which can be added to the URL to view the functionality of the app.
+Please visit the hosted app at https://board-games-galore.cyclic.app/api. This takes you to a dictionary of available endpoints which can be added to the URL to view the functionality of the app.
 
 ## Summary of the project
 
