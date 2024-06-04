@@ -2,7 +2,7 @@
 
 ## Hosted Version
 
-Please visit the hosted app at https://board-games-galore.cyclic.app/api. This takes you to a dictionary of available endpoints which can be added to the URL to view the functionality of the app.
+Please visit the hosted app at https://be-nc-games-haao.onrender.com/api. This takes you to a dictionary of available endpoints which can be added to the URL to view the functionality of the app.
 
 ## Summary of the project
 
@@ -10,7 +10,8 @@ The aim of this project was to build an API to access app data. The database use
 
 The API is for a board game review database containing 4 tables: reviews, categories, users, and comments. This allows for users to post reviews and comment on each others reviews on various board games.
 
-The technologies used include: 
+The technologies used include:
+
 - JS
 - PSQL
 - Node.js
@@ -18,11 +19,11 @@ The technologies used include:
 
 ## Set-up
 
-Cloning: 
+Cloning:
 
 From your terminal enter the following command with the url to this repo to clone.
 
-``` 
+```
 git clone repo_url
 ```
 
@@ -57,12 +58,11 @@ npm run seed
 
 Testing:
 
-To run the tests in __tests__, enter the following command in your terminal:
+To run the tests in **tests**, enter the following command in your terminal:
 
 ```
 npm test
 ```
-
 
 ## Setting up .env Files
 
